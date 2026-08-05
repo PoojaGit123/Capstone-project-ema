@@ -1,27 +1,84 @@
+/* Block: cards — WKND "image-list" design migrated from source computed styles */
+
 .cards > ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px 14px;
 }
 
 .cards > ul > li {
-  border: 1px solid #dadada;
-  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
 }
 
-.cards .cards-card-body {
-  margin: 16px;
-}
-
+/* image on top, ~13:10 aspect, full width */
 .cards .cards-card-image {
   line-height: 0;
 }
 
-.cards > ul > li img {
+.cards .cards-card-image img {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 13 / 10;
   object-fit: cover;
+}
+
+/* text block sits just below the image */
+.cards .cards-card-body {
+  margin: 9px 0 0;
+}
+
+/* title: uppercase, semibold, dark — Source Sans Pro (body font), NOT a blue link */
+.cards .cards-card-body h3 {
+  margin: 0;
+  font-family: var(--body-font-family);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 27px;
+  text-transform: uppercase;
+  color: var(--text-color);
+}
+
+.cards .cards-card-body h3 a:any-link {
+  color: var(--text-color);
+  font: inherit;
+  text-decoration: none;
+  text-transform: inherit;
+}
+
+.cards .cards-card-body h3 a:hover {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+/* description: gray, uppercase, single line with ellipsis */
+.cards .cards-card-body p {
+  margin: 16px 0 0;
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  text-transform: uppercase;
+  color: rgb(105 105 105);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* tablet: 2-up */
+@media (width >= 600px) {
+  .cards > ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* desktop: 4-up */
+@media (width >= 900px) {
+  .cards > ul {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }

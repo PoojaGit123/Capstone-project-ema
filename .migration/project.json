@@ -1,0 +1,10 @@
+{
+  "type": "doc",
+  "sites": {
+    "capstone-project-ema": {
+      "previewOrg": "poojagit123",
+      "previewSite": "capstone-project-ema",
+      "libraryUrl": "https://main--sta-boilerplate--aemdemos.aem.page/tools/sidekick/library.json"
+    }
+  }
+}

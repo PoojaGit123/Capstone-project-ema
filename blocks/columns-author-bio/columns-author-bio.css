@@ -1,0 +1,33 @@
+.columns-author-bio > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.columns-author-bio img {
+  width: 100%;
+}
+
+.columns-author-bio > div > div {
+  order: 1;
+}
+
+.columns-author-bio > div > .columns-author-bio-img-col {
+  order: 0;
+}
+
+.columns-author-bio > div > .columns-author-bio-img-col img {
+  display: block;
+}
+
+@media (width >= 900px) {
+  .columns-author-bio > div {
+    align-items: center;
+    flex-direction: unset;
+    gap: 24px;
+  }
+
+  .columns-author-bio > div > div {
+    flex: 1;
+    order: unset;
+  }
+}

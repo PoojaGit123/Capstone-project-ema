@@ -1,0 +1,214 @@
+/* Block: carousel-hero — WKND full-bleed rotating hero.
+   Values extracted from wknd.site/us/en computed styles. */
+
+/* Full-bleed: override the section wrapper's 1200px cap + side padding */
+.carousel-hero-wrapper {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+.carousel-hero {
+  position: relative;
+}
+
+.carousel-hero .carousel-hero-slides-container {
+  position: relative;
+}
+
+.carousel-hero .carousel-hero-slides,
+.carousel-hero .carousel-hero-slide-indicators {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.carousel-hero .carousel-hero-slides {
+  display: flex;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  overflow: scroll clip;
+}
+
+.carousel-hero .carousel-hero-slides::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-hero .carousel-hero-slide {
+  position: relative;
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  display: block;
+  width: 100%;
+}
+
+/* Full-bleed image */
+.carousel-hero .carousel-hero-slide .carousel-hero-slide-image {
+  margin: 0;
+}
+
+.carousel-hero .carousel-hero-slide .carousel-hero-slide-image picture,
+.carousel-hero .carousel-hero-slide .carousel-hero-slide-image img {
+  display: block;
+  width: 100%;
+}
+
+.carousel-hero .carousel-hero-slide .carousel-hero-slide-image img {
+  aspect-ratio: 3 / 2;
+  height: auto;
+  object-fit: cover;
+}
+
+/* White content panel overlapping the bottom of the image */
+.carousel-hero .carousel-hero-slide .carousel-hero-slide-content {
+  position: relative;
+  z-index: 1;
+  margin: -90px 16px 0;
+  padding: 4px 24px 24px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.carousel-hero .carousel-hero-slide-content h2 {
+  margin: 0;
+  padding-top: 18px;
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-xl);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-color);
+}
+
+.carousel-hero .carousel-hero-slide-content p {
+  margin: 8px 0 0;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-m);
+  line-height: 1.75;
+  color: var(--text-color);
+}
+
+/* Yellow CTA button — the CTA is the last paragraph's link. Style whether or
+   not EDS added the .button class, overriding the global plain-link reset. */
+.carousel-hero .carousel-hero-slide-content p:last-child {
+  margin: 20px 0 0;
+}
+
+.carousel-hero .carousel-hero-slide-content p:last-child > a:any-link,
+.carousel-hero .carousel-hero-slide-content a.button:any-link {
+  display: inline-block;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 14px 35px;
+  background-color: rgb(255 234 0);
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  letter-spacing: normal;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.carousel-hero .carousel-hero-slide-content p:last-child > a:any-link:hover,
+.carousel-hero .carousel-hero-slide-content p:last-child > a:any-link:focus-visible,
+.carousel-hero .carousel-hero-slide-content a.button:any-link:hover,
+.carousel-hero .carousel-hero-slide-content a.button:any-link:focus-visible {
+  background-color: rgb(230 211 0);
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+/* Slide indicator dots — centered, transparent (no bar) */
+.carousel-hero .carousel-hero-slide-indicators {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin: 12px 0 0;
+  padding: 0;
+  background: none;
+  line-height: 0;
+}
+
+.carousel-hero .carousel-hero-slide-indicator button {
+  width: 10px;
+  height: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: rgb(175 175 175);
+  font-size: 0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.carousel-hero .carousel-hero-slide-indicator button:disabled,
+.carousel-hero .carousel-hero-slide-indicator button:hover,
+.carousel-hero .carousel-hero-slide-indicator button:focus-visible {
+  background-color: rgb(0 0 0 / 80%);
+}
+
+/* Prev/Next arrows — small dark chevrons, bottom-right on the indicator row */
+.carousel-hero .carousel-hero-navigation-buttons {
+  position: absolute;
+  right: 16px;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  z-index: 2;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-hero .carousel-hero-navigation-buttons button {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgb(0 0 0);
+  cursor: pointer;
+}
+
+.carousel-hero .carousel-hero-navigation-buttons button::after {
+  display: block;
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 2px);
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentcolor;
+  border-bottom: 0;
+  border-left: 0;
+  transform: translate(-50%, -50%) rotate(-135deg);
+}
+
+.carousel-hero .carousel-hero-navigation-buttons button.slide-next::after {
+  left: calc(50% - 2px);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+@media (width >= 900px) {
+  .carousel-hero .carousel-hero-slide .carousel-hero-slide-image img {
+    aspect-ratio: 2 / 1;
+  }
+
+  .carousel-hero .carousel-hero-slide .carousel-hero-slide-content {
+    margin: -180px 44px 0;
+    padding: 4px 28px 28px;
+  }
+
+  .carousel-hero .carousel-hero-slide-content h2 {
+    padding-top: 18px;
+  }
+
+  .carousel-hero .carousel-hero-navigation-buttons {
+    right: 24px;
+  }
+}

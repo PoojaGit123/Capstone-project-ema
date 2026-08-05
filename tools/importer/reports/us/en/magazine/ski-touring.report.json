@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "url": "https://wknd.site/us/en/magazine/ski-touring.html",
+  "path": "us/en/magazine/ski-touring",
+  "timestamp": "2026-08-05T19:17:02.387Z",
+  "title": "Ski Touring",
+  "template": "article-detail",
+  "blocks": [
+    "columns-author-bio",
+    "article-list"
+  ]
+}
