@@ -1,0 +1,11 @@
+{
+  "total": 4,
+  "offset": 0,
+  "limit": 4,
+  "data": [
+    {"path":"/magazine/guide-la-skateparks","title":"Ultimate Guide to LA Skateparks","image":"https://wknd.site/content/dam/wknd/en/magazine/la-skateparks/AdobeStock_209614412.jpg","description":"Breaking down the top skate destinations in all of Los Angeles.","template":"article-page-template","lastModified":"1700000400"},
+    {"path":"/magazine/ski-touring","title":"Ski Touring","image":"https://wknd.site/content/dam/wknd/en/magazine/ski-touring/AdobeStock_185234134.jpeg","description":"Learn about our ski touring experience.","template":"article-page-template","lastModified":"1700000300"},
+    {"path":"/magazine/arctic-surfing","title":"Arctic Surfing","image":"https://wknd.site/content/dam/wknd/en/magazine/arctic-surfing/AdobeStock_291394745.jpg","description":"We traveled to Northern Norway to document the joy of surfing.","template":"article-page-template","lastModified":"1700000100"},
+    {"path":"/magazine/san-diego-surf","title":"San Diego Surf Spots","image":"https://wknd.site/content/dam/wknd/en/magazine/san-diego-surf/AdobeStock_206578248.jpg","description":"Best beach breaks","template":"article-page-template","lastModified":"1700000200"}
+  ]
+}

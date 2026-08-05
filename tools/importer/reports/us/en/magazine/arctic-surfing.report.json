@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "url": "https://wknd.site/us/en/magazine/arctic-surfing.html",
+  "path": "us/en/magazine/arctic-surfing",
+  "timestamp": "2026-08-05T19:19:11.223Z",
+  "title": "Arctic Surfing",
+  "template": "article-detail",
+  "blocks": [
+    "columns-author-bio",
+    "article-list"
+  ]
+}

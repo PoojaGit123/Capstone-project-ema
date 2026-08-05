@@ -1,0 +1,40 @@
+{
+  "variantName": "carousel-hero",
+  "baseBlock": "carousel",
+  "version": "1.0.0",
+  "created": "2026-08-05T14:45:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://wknd.site/us/en.html",
+    "originPage": "WKND locale homepage",
+    "blockPosition": "top"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "spacious",
+    "purpose": "hero",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "image + heading + description + CTA",
+    "buttonCount": 1,
+    "imageCount": 1,
+    "slides": 3
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "homepage hero banners with rotating slides",
+      "full-bleed promotional carousels with a content panel overlay",
+      "landing pages that lead with multiple featured messages"
+    ],
+    "notSuitableFor": [
+      "static single-image heroes (use hero block)",
+      "in-body image galleries without text overlays",
+      "card-style grids of items (use cards block)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/us/en"],
+    "reuseCount": 1,
+    "lastUsed": "2026-08-05T14:45:00.000Z"
+  }
+}
