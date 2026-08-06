@@ -1,0 +1,88 @@
+/*
+ * Accordion Block — WKND FAQ styling
+ * Source: https://wknd.site/us/en/faqs.html (Core Components accordion)
+ * Values extracted from source computed styles.
+ */
+
+.accordion .accordion-item {
+  border: none;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.accordion .accordion-item + .accordion-item {
+  margin-top: 0;
+}
+
+/* Question row (summary) */
+.accordion .accordion-item summary.accordion-item-label {
+  position: relative;
+  display: block;
+  padding: 13px 40px 13px 13px;
+  border-bottom: 2px solid rgb(235 235 235);
+  font-family: var(--body-font-family);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: rgb(0 0 0);
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+}
+
+.accordion .accordion-item summary.accordion-item-label::-webkit-details-marker {
+  display: none;
+}
+
+/* EDS wraps summary text in a <p>; strip its default margins */
+.accordion .accordion-item summary.accordion-item-label p {
+  margin: 0;
+}
+
+/* Plus / minus toggle icon (right aligned) */
+.accordion .accordion-item summary.accordion-item-label::before,
+.accordion .accordion-item summary.accordion-item-label::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 13px;
+  background-color: rgb(0 0 0);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+/* horizontal bar (always visible) */
+.accordion .accordion-item summary.accordion-item-label::before {
+  width: 16px;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+/* vertical bar (hidden when open -> plus becomes minus) */
+.accordion .accordion-item summary.accordion-item-label::after {
+  right: 20px;
+  width: 2px;
+  height: 16px;
+  transform: translateY(-50%);
+}
+
+.accordion .accordion-item[open] summary.accordion-item-label::after {
+  opacity: 0;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+/* Answer body (panel) */
+.accordion .accordion-item .accordion-item-body {
+  padding: 7px 13px 20px;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.accordion .accordion-item .accordion-item-body p {
+  margin: 0 0 13.5px;
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  line-height: 1.75; /* source: 24.5px on 14px text */
+  color: var(--text-color);
+}
+
+.accordion .accordion-item .accordion-item-body p:last-child {
+  margin-bottom: 0;
+}

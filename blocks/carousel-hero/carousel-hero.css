@@ -194,9 +194,28 @@
   transform: translate(-50%, -50%) rotate(45deg);
 }
 
+/* Banner variant (adventure-detail hero): full-bleed fixed-height image,
+   no overlay content panel. Source: wknd.site bali-surf-camp — img height 400px,
+   object-fit cover. */
+.carousel-hero-banner .carousel-hero-slide .carousel-hero-slide-image img {
+  aspect-ratio: auto;
+  height: 400px;
+  object-fit: cover;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-hero-banner .carousel-hero-slide-content {
+  display: none;
+}
+
 @media (width >= 900px) {
   .carousel-hero .carousel-hero-slide .carousel-hero-slide-image img {
     aspect-ratio: 2 / 1;
+  }
+
+  .carousel-hero-banner .carousel-hero-slide .carousel-hero-slide-image img {
+    aspect-ratio: auto;
+    height: 400px;
   }
 
   .carousel-hero .carousel-hero-slide .carousel-hero-slide-content {

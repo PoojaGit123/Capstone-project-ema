@@ -1,33 +1,216 @@
+/* ==========================================================================
+   columns-author-bio
+   Two usages:
+   1. Single author byline on article pages (image cell + text cell, side by
+      side on desktop) — the base rules below preserve this.
+   2. Contributor cards on about-us: several sibling blocks in one section,
+      shown as a centered grid of cards with a circular portrait, name, role,
+      and inline social links. These rules are guarded with :has() so they
+      only apply when a section holds two or more adjacent author-bio blocks.
+   ========================================================================== */
+
+/* --- Base: single author byline ---
+   Source (WKND coreimg byline): a small circular avatar on the left with the
+   author name (Asar 24px/36px), role (Source Sans Pro 12px/30px uppercase grey)
+   and a row of social buttons on the right. Values from getComputedStyle. */
 .columns-author-bio > div {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 24px;
 }
 
-.columns-author-bio img {
-  width: 100%;
-}
-
-.columns-author-bio > div > div {
-  order: 1;
-}
-
+/* image cell: small circular avatar (60x60 in source) */
 .columns-author-bio > div > .columns-author-bio-img-col {
+  flex: 0 0 auto;
   order: 0;
 }
 
 .columns-author-bio > div > .columns-author-bio-img-col img {
   display: block;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* text cell */
+.columns-author-bio > div > div:not(.columns-author-bio-img-col) {
+  flex: 1;
+  order: 1;
+}
+
+/* author name */
+.columns-author-bio h2 {
+  margin: 0 0 4px;
+  font-family: var(--heading-font-family);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 36px;
+  color: var(--text-color);
+}
+
+/* role / occupation ("Skater, Writer") */
+.columns-author-bio p {
+  margin: 0 0 12px;
+  font-family: var(--body-font-family);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 30px;
+  text-transform: uppercase;
+  color: rgb(105 105 105);
+}
+
+/* social buttons row (grouped by the block JS). Source renders 48x48 dark
+   icon tiles; we have text labels, so use dark boxes with padded labels. */
+.columns-author-bio-social {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.columns-author-bio-social a:any-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  background-color: var(--text-color);
+  color: var(--background-color);
+  text-decoration: none;
+}
+
+.columns-author-bio-social a:hover {
+  background-color: var(--link-hover-color);
+  color: var(--background-color);
+  text-decoration: none;
+}
+
+/* icon-only social tiles: source renders a ~17.5px glyph centered in the 48px
+   square dark tile. */
+.columns-author-bio-social a svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+/* ==========================================================================
+   Contributor-card layout (about-us): multiple blocks in one section
+   ========================================================================== */
+
+/* Turn the whole section into a constrained, centered card grid.
+   Guard: only when two contributor blocks sit adjacently in the section. */
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+/* Neutralize the per-child max-width/centering the global section rule adds. */
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) > div {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Section headings ("Our Contributors", "WKND Guides") span the full row. */
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) > .default-content-wrapper {
+  grid-column: 1 / -1;
+}
+
+@media (width >= 600px) {
+  .section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (width >= 900px) {
-  .columns-author-bio > div {
-    align-items: center;
-    flex-direction: unset;
-    gap: 24px;
+  .section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0 32px;
   }
+}
 
-  .columns-author-bio > div > div {
-    flex: 1;
-    order: unset;
-  }
+/* --- Card content: stacked and centered --- */
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio {
+  padding: 9px 14px 18px;
+  text-align: center;
+}
+
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio > div,
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio > div > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  order: unset;
+  flex: unset;
+}
+
+/* Circular portrait */
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio-img-col {
+  margin-bottom: 6px;
+}
+
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio-img-col img {
+  width: 164px;
+  height: 164px;
+  max-width: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Name */
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio h2 {
+  margin: 6px 0;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 36px;
+  color: var(--text-color);
+}
+
+/* Role / occupation */
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio p {
+  margin: 0 0 4px;
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text-color);
+}
+
+/* Social links row (grouped by the block JS) */
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio-social {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio-social a:any-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  background-color: var(--text-color);
+  color: var(--background-color);
+  text-decoration: none;
+}
+
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio-social a:hover {
+  background-color: var(--link-hover-color);
+  color: var(--background-color);
+  text-decoration: none;
 }

@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "https://wknd.site/us/en/faqs.html",
+  "path": "us/en/faqs",
+  "timestamp": "2026-08-05T20:20:14.269Z",
+  "title": "FAQs",
+  "template": "faq",
+  "blocks": [
+    "accordion"
+  ]
+}

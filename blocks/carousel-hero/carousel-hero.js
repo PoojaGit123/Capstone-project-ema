@@ -151,6 +151,15 @@ export default function decorate(block) {
   container.append(slidesWrapper);
   block.prepend(container);
 
+  // Banner variant: when no slide has content (title/text/link/media in the
+  // content cell), the block is a full-bleed banner image with no overlay panel
+  // (WKND adventure-detail hero). Homepage carousel keeps its content panels.
+  const hasContent = [...block.querySelectorAll('.carousel-hero-slide-content')]
+    .some((cell) => cell.textContent.trim() || cell.querySelector('img, picture, a'));
+  if (!hasContent) {
+    block.classList.add('carousel-hero-banner');
+  }
+
   if (!isSingleSlide) {
     bindEvents(block);
   }

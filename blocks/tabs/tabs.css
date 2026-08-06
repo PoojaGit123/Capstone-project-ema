@@ -1,0 +1,77 @@
+/* Block: tabs — WKND adventure trip details.
+ * Values extracted from source computed styles (wknd.site bali-surf-camp).
+ * Tab bar: horizontal, active tab = dark fill + white text, uppercase labels.
+ */
+
+.tabs .tabs-list {
+  display: flex;
+  gap: 0;
+  margin: 18px 0;
+  padding: 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.tabs .tabs-tab {
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: 0;
+  padding: 8px 16px;
+  background-color: transparent;
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs); /* 14px */
+  font-weight: 400;
+  line-height: 21px;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.tabs .tabs-tab p {
+  margin: 0;
+}
+
+.tabs .tabs-tab:hover:not([aria-selected='true']) {
+  background-color: var(--light-color);
+}
+
+.tabs .tabs-tab[aria-selected='true'] {
+  background-color: var(--text-color);
+  color: var(--background-color);
+  cursor: default;
+}
+
+.tabs .tabs-panel {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: auto;
+}
+
+.tabs .tabs-panel[aria-hidden='true'] {
+  display: none;
+}
+
+.tabs .tabs-panel p {
+  margin: 0 0 13.5px;
+  line-height: 45px;
+  text-align: justify;
+}
+
+.tabs .tabs-panel img {
+  width: 100%;
+  margin: 7px 0;
+}
+
+.tabs .tabs-panel ul {
+  margin: 18px 0;
+  padding-left: 1.5em;
+}
+
+.tabs .tabs-panel li {
+  line-height: 1.6;
+}

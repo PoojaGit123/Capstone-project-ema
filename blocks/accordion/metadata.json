@@ -1,0 +1,41 @@
+{
+  "variantName": "accordion",
+  "baseBlock": "accordion",
+  "version": "1.0.0",
+  "created": "2026-08-05T20:16:21.826Z",
+  "sourceContext": {
+    "originUrl": "https://wknd.site/us/en/faqs.html",
+    "originPage": "WKND FAQs page",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "faq",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "question label + answer content per row",
+    "buttonCount": 0,
+    "imageCount": 0
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "FAQ pages",
+      "collapsible Q&A sections",
+      "expandable help/support content",
+      "any page with a stack of toggleable label/content pairs"
+    ],
+    "notSuitableFor": [
+      "tabbed content switchers (use tabs)",
+      "side-by-side comparisons (use columns)",
+      "always-visible content"
+    ]
+  },
+  "notes": "Adopted from the vanilla AEM Block Collection accordion. The vanilla source imports moveInstrumentation from scripts/scripts.js; this doc project's scripts.js does NOT export moveInstrumentation, so the import and its usage were removed (consistent with the tabs and carousel-hero blocks in this project). Content model: 2-column table, each row = [question | answer]; decorated into native <details>/<summary> disclosures.",
+  "usage": {
+    "pagesUsing": ["/us/en/faqs"],
+    "reuseCount": 1,
+    "lastUsed": "2026-08-05T20:16:21.826Z"
+  }
+}

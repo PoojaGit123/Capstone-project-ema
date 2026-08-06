@@ -64,8 +64,13 @@
   line-height: 1.75;
 }
 
+.hero-adventure .hero-content h2 {
+  margin: 0;
+}
+
 .hero-adventure .hero-content p {
-  line-height: 1.6;
+  margin: 0;
+  line-height: 1.75;
 }
 
 /* CTA: WKND-style uppercase underlined link (dark, not the blue default).
@@ -104,14 +109,30 @@
 }
 
 /* ============================================================
-   ADVENTURE variant -- full-width image on top, text below
+   ADVENTURE variant -- full-bleed cinematic image with a white
+   content card that overlaps the image bottom (matches WKND
+   cmp-teaser--hero / --imagebottom, shared by homepage + listing)
    ============================================================ */
-.hero-adventure .hero-image img {
-  aspect-ratio: 2 / 1;
+
+/* break the block out of the 1200px section container to full viewport width */
+.hero-adventure {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
 }
 
+.hero-adventure .hero-image img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 4; /* 1440x640 source */
+}
+
+/* white content card, centered, pulled up over the image */
 .hero-adventure .hero-content {
-  padding: 24px 0 0;
+  position: relative;
+  max-width: var(--content-max-width);
+  margin: -56px auto 0;
+  padding: 18px 28px 24px;
+  background-color: var(--background-color);
 }
 
 /* ============================================================
@@ -143,8 +164,9 @@
     padding: 63px 36px 36px;
   }
 
-  /* Adventure: a bit more top spacing on desktop */
+  /* Adventure: white card overlaps the tall image by -180px (WKND source) */
   .hero-adventure .hero-content {
-    padding: 32px 0 0;
+    margin-top: -180px;
+    padding: 18px 28px 24px;
   }
 }
