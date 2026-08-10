@@ -1,5 +1,8 @@
 version: 1
 
+# Index config for the WKND article query-index. Defines the metadata columns
+# (title, image, description, template, author, publisheddate) the article-list
+# block and magazine pages rely on.
 indices:
   # Root query index. Any published magazine article (across locales, e.g.
   # /us/en/magazine/arctic-surfing) is automatically added here, which is what
