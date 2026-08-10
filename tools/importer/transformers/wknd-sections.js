@@ -60,6 +60,24 @@ function lastInDocumentOrder(els) {
 
 export default function transform(hookName, element, payload) {
   if (hookName === TransformHook.afterTransform) {
+    const { document } = payload;
+    const templateName = payload && payload.template && payload.template.name;
+
+    // Preserve authored separators (WKND core "separator" component) as a
+    // section break. Scoped to section-landing pages (magazine index), where the
+    // source renders a thin rule mid-content between "Members Only" and the promo
+    // teasers. NOT applied to the homepage, whose section-end separators are
+    // reproduced via CSS (.cta-wrapper) — converting those would add empty
+    // sections. Converting to a top-level <hr> makes the divider survive into the
+    // doc markdown and the following content becomes its own section.
+    if (templateName === 'section-landing') {
+      element.querySelectorAll('.separator, .cmp-separator').forEach((sepEl) => {
+        if (!sepEl.parentNode) return;
+        const hr = document.createElement('hr');
+        sepEl.replaceWith(hr);
+      });
+    }
+
     const sections = payload
       && payload.template
       && Array.isArray(payload.template.sections)
@@ -67,8 +85,6 @@ export default function transform(hookName, element, payload) {
       : [];
 
     if (sections.length < 2) return;
-
-    const { document } = payload;
 
     // Process in reverse so earlier insertions do not shift later lookups.
     for (let i = sections.length - 1; i >= 0; i -= 1) {

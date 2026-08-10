@@ -285,6 +285,35 @@ main a.button:any-link:hover {
   color: var(--link-hover-color);
 }
 
+/* Section CTAs ("All Articles", "All Trips") are solid WKND-yellow buttons,
+   followed by a thin grey rule that closes the section (matches source). */
+main a.button.cta:any-link {
+  display: inline-block;
+  padding: 16px 32px;
+  border: 0;
+  border-radius: 0;
+  background-color: var(--brand-primary, rgb(255 234 0));
+  color: var(--text-color);
+  font-size: var(--body-font-size-xs);
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  letter-spacing: normal;
+}
+
+main a.button.cta:any-link:hover,
+main a.button.cta:any-link:focus-visible {
+  background-color: var(--brand-primary, rgb(255 234 0));
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+main .cta-wrapper {
+  margin: 0;
+  padding-bottom: 64px;
+  border-bottom: 1px solid rgb(235 235 235);
+}
+
 main img {
   max-width: 100%;
   width: auto;
@@ -329,4 +358,109 @@ main .section.highlight {
   background-color: var(--light-color);
   margin: 0;
   padding: 40px 0;
+}
+
+/* Section-landing (magazine index) promo divider: the source separates the
+   "Members Only" content from the promo teasers with a thin 1px rule. The
+   importer converts that authored separator into a section break, so the promo
+   section that directly follows the article list gets a matching top rule. */
+main > .article-list-container + .section > div {
+  border-top: 1px solid rgb(235 235 235);
+  padding-top: 40px;
+}
+
+/* Source renders the two promo teasers ("Alaskan Adventure", "Fly Fishing the
+   Amazon") as side-by-side secure-teaser cards: heading, grey description, grey
+   "Read More", then a 360x200 cover image. The migrated default content is a
+   flat sequence of 4 elements per teaser (h2, p desc, p "Read More", p image),
+   so a column-flow grid with 4 rows lays each teaser into its own column
+   without touching the authored content. */
+main > .article-list-container + .section > .default-content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0 28px;
+}
+
+main > .article-list-container + .section > .default-content-wrapper > * {
+  margin: 0;
+}
+
+/* heading: uppercase, semibold, dark. The 65% alpha reproduces the source's
+   members-only dim on the title text while keeping the ::before lock badge
+   fully opaque (fading the whole <h2> element would fade the badge too). */
+main > .article-list-container + .section > .default-content-wrapper h2 {
+  position: relative;
+  font-family: var(--body-font-family);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 27px;
+  text-transform: uppercase;
+  color: rgb(32 32 32 / 65%);
+}
+
+/* Secure "members-only" lock badge (matches source .cmp-teaser--secure::before):
+   a WKND-yellow corner triangle with a black padlock, sitting at the card's
+   top-left and overlapping the start of the heading. The source uses an icon
+   font (wknd-icon-font U+E98F); reproduced here with an inline padlock SVG so
+   no extra font is needed. */
+main > .article-list-container + .section > .default-content-wrapper h2::before {
+  content: "";
+  position: absolute;
+  top: -18px;
+  left: -14px;
+  width: 48px;
+  height: 48px;
+  background-image:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23000" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'),
+    linear-gradient(to top left, rgb(255 255 255 / 0%) 0, rgb(255 255 255 / 0%) 50%, var(--brand-primary, #ffea00) 50%, var(--brand-primary, #ffea00) 100%);
+  background-repeat: no-repeat;
+  background-position: 6px 6px, center;
+  background-size: 20px 20px, 100% 100%;
+  z-index: 2;
+}
+
+/* Secure "members-only" dim: the source wraps the teaser content (title,
+   description, CTA, image) in a layer at opacity 0.65, giving the whole card a
+   faded/locked look while the yellow lock badge stays crisp. We fade the
+   content items (paragraphs + image) directly; the heading text is dimmed via
+   its 65%-alpha color above so its ::before badge stays full-opacity. */
+main > .article-list-container + .section > .default-content-wrapper p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgb(105 105 105);
+  opacity: 0.65;
+}
+
+/* the promo image sits below the text, 13:10 cover like the source's 360x200 */
+main > .article-list-container + .section > .default-content-wrapper p:has(img) {
+  line-height: 0;
+}
+
+/* "Read More" is the 3rd element in each 4-part teaser (h2, desc, Read More,
+   image) → positions 3 and 7. The source renders it as a light-grey box button
+   (bg rgb(235,235,235), grey uppercase text, 7px 14px padding). */
+main > .article-list-container + .section > .default-content-wrapper p:nth-child(4n + 3) {
+  display: inline-block;
+  width: fit-content;
+  margin: 14px 0;
+  padding: 7px 14px;
+  background-color: rgb(235 235 235);
+  text-transform: uppercase;
+}
+
+main > .article-list-container + .section > .default-content-wrapper img {
+  width: 100%;
+  aspect-ratio: 18 / 10;
+  object-fit: cover;
+}
+
+@media (width >= 900px) {
+  /* two columns, filled column-first: each teaser (4 stacked elements) forms
+     one column. */
+  main > .article-list-container + .section > .default-content-wrapper {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(4, auto);
+    grid-auto-flow: column;
+    align-items: start;
+  }
 }
