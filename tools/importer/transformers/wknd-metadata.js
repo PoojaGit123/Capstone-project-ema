@@ -150,7 +150,18 @@ export default function transform(hookName, element, payload) {
   const cells = {};
   if (title) cells.Title = title;
   if (description) cells.Description = description;
-  if (leadImg) cells.Image = leadImg.cloneNode(true);
+  if (leadImg) {
+    // The og:image alt should concisely describe the article, but some source
+    // lead images carry very long descriptive alt text (e.g. western-australia's
+    // ~1200-char paragraph), which bloats the Metadata block and produces an
+    // unusable og:image alt. Normalize the cloned image's alt to the article
+    // title (fall back to a trimmed original alt when there is no title).
+    const imgClone = leadImg.cloneNode(true);
+    const originalAlt = (imgClone.getAttribute('alt') || '').trim();
+    const alt = title || (originalAlt.length > 120 ? `${originalAlt.slice(0, 117)}...` : originalAlt);
+    if (alt) imgClone.setAttribute('alt', alt);
+    cells.Image = imgClone;
+  }
   if (author) cells.Author = author;
   cells.Publisheddate = publisheddate;
 
@@ -165,5 +176,14 @@ export default function transform(hookName, element, payload) {
     cells,
   });
 
+  // The Metadata block must be its OWN top-level section so EDS consumes it into
+  // <head> instead of rendering it as visible content. This transformer runs
+  // after wknd-sections.js has already placed the inter-section <hr>s, so append
+  // a section-break <hr> before the block; without it the block merges into the
+  // preceding section (e.g. related-stories) and renders as a visible table.
+  const lastChild = element.lastElementChild;
+  if (lastChild && lastChild.tagName !== 'HR') {
+    element.append(doc.createElement('hr'));
+  }
   element.append(metadataBlock);
 }
