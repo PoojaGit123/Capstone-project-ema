@@ -167,16 +167,17 @@
   margin: 0 auto;
 }
 
-/* Name */
+/* Name — source h3 (Asar 24px/36px), margin only below (0 0 6px) */
 .section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio h2 {
-  margin: 6px 0;
+  margin: 0 0 6px;
   font-size: 24px;
   font-weight: 400;
   line-height: 36px;
   color: var(--text-color);
 }
 
-/* Role / occupation */
+/* Role / occupation — source h5 (Source Sans Pro 14px/600/21px, uppercase,
+   no letter-spacing) */
 .section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio p {
   margin: 0 0 4px;
   font-family: var(--body-font-family);
@@ -184,17 +185,18 @@
   font-weight: 600;
   line-height: 21px;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: normal;
   color: var(--text-color);
 }
 
-/* Social links row (grouped by the block JS) */
+/* Social links row (grouped by the block JS). Source: three 48px dark tiles
+   sitting flush together (no gap), 22px below the role. */
 .section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio-social {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  gap: 8px;
-  margin-top: 18px;
+  gap: 0;
+  margin-top: 22px;
 }
 
 .section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio-social a:any-link {
@@ -205,7 +207,7 @@
   height: 48px;
   padding: 0;
   background-color: var(--text-color);
-  color: var(--background-color);
+  color: rgb(235 235 235);
   text-decoration: none;
 }
 

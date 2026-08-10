@@ -1,20 +1,168 @@
+/* WKND footer: dark band (rgb(32,32,32)) with light text.
+   Top row (one line): logo + nav links (left) | Follow Us + social box (right);
+   then copyright + fine-print paragraphs (no divider).
+   Matched to wknd.site. */
+
 footer {
-  background-color: var(--light-color);
-  font-size: var(--body-font-size-xs);
+  background-color: var(--section-dark-color, rgb(32 32 32));
+  color: rgb(235 235 235);
+  font-size: var(--body-font-size-m);
+
+  /* Matches source: footer sits 3rem below page content with tight padding */
+  margin-top: 3rem;
+  padding: 1rem 0 1.5rem;
 }
 
-footer .footer > div {
+footer > div {
+  box-sizing: border-box;
   margin: auto;
   max-width: 1200px;
-  padding: 40px 24px 24px;
-}
-
-footer .footer p {
-  margin: 0;
+  padding: 0 24px;
 }
 
 @media (width >= 900px) {
-  footer .footer > div {
-    padding: 40px 32px 24px;
+  footer > div {
+    padding: 0 32px;
+  }
+}
+
+footer a:any-link {
+  color: rgb(235 235 235);
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Top band: brand (logo + nav) left, social right (no divider) ===== */
+footer .footer-top {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+footer .footer-brand,
+footer .footer-social,
+footer .footer-brand > .default-content-wrapper,
+footer .footer-social > .default-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+/* The default-content-wrapper should fill the section so its logo + nav
+   (or Follow Us + social) lay out on one row. */
+footer .footer-brand > .default-content-wrapper,
+footer .footer-social > .default-content-wrapper {
+  width: 100%;
+}
+
+footer .footer-brand p { margin: 0; }
+
+footer .footer-brand img {
+  width: 128px;
+  height: auto;
+  display: block;
+}
+
+/* Footer nav */
+footer .footer-brand ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+footer .footer-brand ul a {
+  text-transform: uppercase;
+  font-size: var(--body-font-size-xs);
+}
+
+/* Follow Us + social icons */
+footer .footer-social h4 {
+  margin: 0;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  font-weight: 600;
+  text-transform: uppercase;
+  color: rgb(235 235 235);
+}
+
+/* Social icons sit in a light box (matches source) */
+footer .footer-social-icons {
+  list-style: none;
+  margin: 0;
+  padding: 12px 20px;
+  display: flex;
+  gap: 20px;
+  background-color: rgb(245 245 245);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+footer .footer-social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+footer .footer-social-icons a:hover {
+  opacity: 0.6;
+}
+
+footer .footer-social-icons img {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+/* ===== Legal / fine print (12px, tight leading — matches source) ===== */
+footer .footer-legal p {
+  margin: 0 0 13.5px;
+  font-size: 12px;
+  line-height: 1.25;
+  color: rgb(247 247 247);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+footer .footer-legal a {
+  text-decoration: underline;
+}
+
+/* ===== Desktop: brand + social on ONE row (logo/nav left, follow/social right) ===== */
+@media (width >= 900px) {
+  footer .footer-top {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  footer .footer-brand {
+    flex: 1 1 auto;
+  }
+
+  /* Keep logo + nav on one line beside each other (matches source) */
+  footer .footer-brand > .default-content-wrapper {
+    flex-wrap: nowrap;
+    gap: 48px;
+    width: auto;
+  }
+
+  footer .footer-brand ul {
+    flex-wrap: nowrap;
+  }
+
+  footer .footer-social {
+    flex: 0 0 auto;
+    gap: 24px;
   }
 }

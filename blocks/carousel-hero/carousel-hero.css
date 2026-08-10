@@ -209,8 +209,11 @@
 }
 
 @media (width >= 900px) {
+  /* Source hero image is a fixed 640px tall band (same at 1200 & 1440),
+     not an aspect-ratio scale. */
   .carousel-hero .carousel-hero-slide .carousel-hero-slide-image img {
-    aspect-ratio: 2 / 1;
+    aspect-ratio: auto;
+    height: 640px;
   }
 
   .carousel-hero-banner .carousel-hero-slide .carousel-hero-slide-image img {
@@ -218,13 +221,28 @@
     height: 400px;
   }
 
+  /* Source white panel is constrained to the centered content container
+     (~1192px, inset from the full-bleed image) with 28px side padding and
+     no vertical padding — the vertical rhythm comes from child margins. */
   .carousel-hero .carousel-hero-slide .carousel-hero-slide-content {
-    margin: -180px 44px 0;
-    padding: 4px 28px 28px;
+    box-sizing: border-box;
+    max-width: var(--content-max-width);
+    margin: -180px auto 0;
+    padding: 0 28px;
   }
 
   .carousel-hero .carousel-hero-slide-content h2 {
     padding-top: 18px;
+  }
+
+  /* Source description sits directly beneath the title (margin 0). */
+  .carousel-hero .carousel-hero-slide-content p {
+    margin: 0;
+  }
+
+  /* Source CTA action-container: margin 18px 0 (top gap + bottom gap). */
+  .carousel-hero .carousel-hero-slide-content p:last-child {
+    margin: 18px 0;
   }
 
   .carousel-hero .carousel-hero-navigation-buttons {
