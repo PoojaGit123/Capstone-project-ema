@@ -360,6 +360,23 @@ main .section.highlight {
   padding: 40px 0;
 }
 
+/* Section-title underline accent (WKND cmp-title--underline): standalone section
+   headings — "Recent Articles", "Next Adventures", "All Articles", "Members
+   Only" — carry a short 84px x 2px WKND-yellow bar beneath the text. These are
+   h2s sitting directly in a section's default-content-wrapper (not card titles,
+   hero titles, or the page H1). */
+main > .section > .default-content-wrapper > h2 {
+  margin-bottom: 13.5px;
+}
+
+main > .section > .default-content-wrapper > h2::after {
+  content: "";
+  display: block;
+  width: 84px;
+  margin-top: 8px;
+  border-bottom: 2px solid var(--brand-primary, rgb(255 234 0));
+}
+
 /* Section-landing (magazine index) promo divider: the source separates the
    "Members Only" content from the promo teasers with a thin 1px rule. The
    importer converts that authored separator into a section break, so the promo
@@ -375,20 +392,20 @@ main > .article-list-container + .section > div {
    flat sequence of 4 elements per teaser (h2, p desc, p "Read More", p image),
    so a column-flow grid with 4 rows lays each teaser into its own column
    without touching the authored content. */
-main > .article-list-container + .section > .default-content-wrapper {
+main > .article-list-container + .section > .default-content-wrapper:has(img) {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0 28px;
 }
 
-main > .article-list-container + .section > .default-content-wrapper > * {
+main > .article-list-container + .section > .default-content-wrapper:has(img) > * {
   margin: 0;
 }
 
 /* heading: uppercase, semibold, dark. The 65% alpha reproduces the source's
    members-only dim on the title text while keeping the ::before lock badge
    fully opaque (fading the whole <h2> element would fade the badge too). */
-main > .article-list-container + .section > .default-content-wrapper h2 {
+main > .article-list-container + .section > .default-content-wrapper:has(img) h2 {
   position: relative;
   font-family: var(--body-font-family);
   font-size: 18px;
@@ -403,7 +420,7 @@ main > .article-list-container + .section > .default-content-wrapper h2 {
    top-left and overlapping the start of the heading. The source uses an icon
    font (wknd-icon-font U+E98F); reproduced here with an inline padlock SVG so
    no extra font is needed. */
-main > .article-list-container + .section > .default-content-wrapper h2::before {
+main > .article-list-container + .section > .default-content-wrapper:has(img) h2::before {
   content: "";
   position: absolute;
   top: -18px;
@@ -424,7 +441,7 @@ main > .article-list-container + .section > .default-content-wrapper h2::before 
    faded/locked look while the yellow lock badge stays crisp. We fade the
    content items (paragraphs + image) directly; the heading text is dimmed via
    its 65%-alpha color above so its ::before badge stays full-opacity. */
-main > .article-list-container + .section > .default-content-wrapper p {
+main > .article-list-container + .section > .default-content-wrapper:has(img) p {
   font-size: 14px;
   line-height: 1.5;
   color: rgb(105 105 105);
@@ -432,14 +449,14 @@ main > .article-list-container + .section > .default-content-wrapper p {
 }
 
 /* the promo image sits below the text, 13:10 cover like the source's 360x200 */
-main > .article-list-container + .section > .default-content-wrapper p:has(img) {
+main > .article-list-container + .section > .default-content-wrapper:has(img) p:has(img) {
   line-height: 0;
 }
 
 /* "Read More" is the 3rd element in each 4-part teaser (h2, desc, Read More,
    image) → positions 3 and 7. The source renders it as a light-grey box button
    (bg rgb(235,235,235), grey uppercase text, 7px 14px padding). */
-main > .article-list-container + .section > .default-content-wrapper p:nth-child(4n + 3) {
+main > .article-list-container + .section > .default-content-wrapper:has(img) p:nth-child(4n + 3) {
   display: inline-block;
   width: fit-content;
   margin: 14px 0;
@@ -448,7 +465,7 @@ main > .article-list-container + .section > .default-content-wrapper p:nth-child
   text-transform: uppercase;
 }
 
-main > .article-list-container + .section > .default-content-wrapper img {
+main > .article-list-container + .section > .default-content-wrapper:has(img) img {
   width: 100%;
   aspect-ratio: 18 / 10;
   object-fit: cover;
@@ -457,7 +474,7 @@ main > .article-list-container + .section > .default-content-wrapper img {
 @media (width >= 900px) {
   /* two columns, filled column-first: each teaser (4 stacked elements) forms
      one column. */
-  main > .article-list-container + .section > .default-content-wrapper {
+  main > .article-list-container + .section > .default-content-wrapper:has(img) {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: repeat(4, auto);
     grid-auto-flow: column;

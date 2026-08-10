@@ -3,9 +3,11 @@ import {
   loadFooter,
   decorateIcons,
   decorateSections,
+  decorateBlock,
   decorateBlocks,
   decorateTemplateAndTheme,
   waitForFirstImage,
+  loadBlock,
   loadSection,
   loadSections,
   loadCSS,
@@ -74,11 +76,56 @@ function buildWidgetAutoBlocks(main) {
 }
 
 /**
+ * Builds a tabs block from the adventure-listing filter pattern: an ordered list
+ * of category labels (All, Climbing, …) immediately followed by a `.cards` grid
+ * (the "All" panel) and one `<ul>` per remaining category. The source renders
+ * these as filter tabs; the import leaves them as flat default content, so we
+ * group them into a real tabs block that tabs.js then decorates.
+ * @param {Element} main The container element
+ */
+function buildAdventureTabs(main) {
+  main.querySelectorAll('ol').forEach((ol) => {
+    const cards = ol.nextElementSibling;
+    if (!cards || !cards.classList || !cards.classList.contains('cards')) return;
+
+    const labels = [...ol.querySelectorAll(':scope > li')]
+      .map((li) => li.textContent.trim())
+      .filter(Boolean);
+    if (labels.length < 2) return;
+
+    // Panels, in label order: "All" = the cards grid, then the category <ul>s.
+    const panels = [cards];
+    let sib = cards.nextElementSibling;
+    while (sib && sib.tagName === 'UL') {
+      const next = sib.nextElementSibling;
+      panels.push(sib);
+      sib = next;
+    }
+    // Only build when every label has a matching panel (otherwise leave as-is).
+    if (panels.length !== labels.length) return;
+
+    const rows = labels.map((label, i) => [label, { elems: [panels[i]] }]);
+    const tabsBlock = buildBlock('tabs', rows);
+    tabsBlock.classList.add('tabs-cards');
+    ol.replaceWith(tabsBlock);
+
+    // The "All" panel wraps a `.cards` block. decorateBlocks only reaches
+    // top-level blocks (div.section > div > div), so decorate + load this
+    // nested one explicitly, otherwise its cards never build into a grid.
+    tabsBlock.querySelectorAll('.cards').forEach((nested) => {
+      decorateBlock(nested);
+      loadBlock(nested);
+    });
+  });
+}
+
+/**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
 function buildAutoBlocks(main) {
   try {
+    buildAdventureTabs(main);
     // auto load `*/fragments/*` references
     const fragments = [...main.querySelectorAll('a[href*="/fragments/"]')].filter((f) => !f.closest('.fragment'));
     if (fragments.length > 0) {

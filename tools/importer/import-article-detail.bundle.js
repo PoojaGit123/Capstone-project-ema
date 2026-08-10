@@ -1,26 +1,8 @@
-/* eslint-disable */
 var CustomImportScript = (() => {
   var __defProp = Object.defineProperty;
-  var __defProps = Object.defineProperties;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
   var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __getOwnPropSymbols = Object.getOwnPropertySymbols;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __propIsEnum = Object.prototype.propertyIsEnumerable;
-  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-  var __spreadValues = (a, b) => {
-    for (var prop in b || (b = {}))
-      if (__hasOwnProp.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    if (__getOwnPropSymbols)
-      for (var prop of __getOwnPropSymbols(b)) {
-        if (__propIsEnum.call(b, prop))
-          __defNormalProp(a, prop, b[prop]);
-      }
-    return a;
-  };
-  var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   var __export = (target, all) => {
     for (var name in all)
       __defProp(target, name, { get: all[name], enumerable: true });
@@ -54,7 +36,11 @@ var CustomImportScript = (() => {
       h2.textContent = nameText;
       textCell.push(h2);
     }
-    const roleEl = element.querySelector(".cmp-byline__occupations, .cmp-byline p");
+    let roleEl = element.querySelector(".cmp-byline__occupations, .cmp-byline p");
+    if (!roleEl) {
+      const h5 = element.querySelector("h5");
+      roleEl = h5 && h5 !== nameEl ? h5 : null;
+    }
     const roleText = roleEl ? roleEl.textContent.trim() : "";
     if (roleText) {
       const p = document.createElement("p");
@@ -195,9 +181,17 @@ var CustomImportScript = (() => {
   }
   function transform2(hookName, element, payload) {
     if (hookName === TransformHook2.afterTransform) {
+      const { document } = payload;
+      const templateName = payload && payload.template && payload.template.name;
+      if (templateName === "section-landing") {
+        element.querySelectorAll(".separator, .cmp-separator").forEach((sepEl) => {
+          if (!sepEl.parentNode) return;
+          const hr = document.createElement("hr");
+          sepEl.replaceWith(hr);
+        });
+      }
       const sections = payload && payload.template && Array.isArray(payload.template.sections) ? payload.template.sections : [];
       if (sections.length < 2) return;
-      const { document } = payload;
       for (let i = sections.length - 1; i >= 0; i -= 1) {
         const section = sections[i];
         const els = resolveSectionElements(element, section);
@@ -277,7 +271,13 @@ var CustomImportScript = (() => {
     const cells = {};
     if (title) cells.Title = title;
     if (description) cells.Description = description;
-    if (leadImg) cells.Image = leadImg.cloneNode(true);
+    if (leadImg) {
+      const imgClone = leadImg.cloneNode(true);
+      const originalAlt = (imgClone.getAttribute("alt") || "").trim();
+      const alt = title || (originalAlt.length > 120 ? `${originalAlt.slice(0, 117)}...` : originalAlt);
+      if (alt) imgClone.setAttribute("alt", alt);
+      cells.Image = imgClone;
+    }
     if (author) cells.Author = author;
     cells.Publisheddate = publisheddate;
     if (Object.keys(cells).length === 0) return;
@@ -286,6 +286,10 @@ var CustomImportScript = (() => {
       name: "Metadata",
       cells
     });
+    const lastChild = element.lastElementChild;
+    if (lastChild && lastChild.tagName !== "HR") {
+      element.append(doc.createElement("hr"));
+    }
     element.append(metadataBlock);
   }
 
@@ -326,7 +330,7 @@ var CustomImportScript = (() => {
     transform3
   ];
   function executeTransformers(hookName, element, payload) {
-    const enhancedPayload = __spreadProps(__spreadValues({}, payload), { template: PAGE_TEMPLATE });
+    const enhancedPayload = { ...payload, template: PAGE_TEMPLATE };
     transformers.forEach((transformerFn) => {
       try {
         transformerFn.call(null, hookName, element, enhancedPayload);
