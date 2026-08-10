@@ -33,6 +33,50 @@ function toggleMenu(nav, forceExpanded = null) {
 }
 
 /**
+ * Collapses the header into a compact bar once the page is scrolled and
+ * expands it back to full height at the top (matches the source's shrink-on-
+ * scroll behavior). The page scroll container may be the body or the document,
+ * so we read whichever reports a scroll offset.
+ *
+ * Uses hysteresis (separate enter/exit thresholds) so the state can't flip on
+ * and off at the same scroll position. Without the gap, shrinking the header
+ * makes the document shorter and the browser's scroll anchoring nudges the
+ * scroll offset back across a single threshold, causing the header to shake.
+ * The dead zone (EXIT..ENTER) is wider than the height the header loses when
+ * collapsing, so that feedback loop can't happen.
+ * @param {Element} header The header block element
+ */
+function setupScrollShrink(header) {
+  const ENTER = 90; // add .scrolled once scrolled past this
+  const EXIT = 10; // remove it only when back near the very top
+  const getScrollTop = () => window.scrollY
+    || document.documentElement.scrollTop
+    || document.body.scrollTop
+    || 0;
+  let ticking = false;
+  const update = () => {
+    const y = getScrollTop();
+    if (header.classList.contains('scrolled')) {
+      if (y <= EXIT) header.classList.remove('scrolled');
+    } else if (y >= ENTER) {
+      header.classList.add('scrolled');
+    }
+    ticking = false;
+  };
+  const onScroll = () => {
+    if (!ticking) {
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
+  };
+  // Body is the scroll container when the page sets overflow on it; listen on
+  // both so we catch whichever fires.
+  window.addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('scroll', onScroll, { passive: true, capture: true });
+  update();
+}
+
+/**
  * Builds the search form (form controls belong in JS, not the nav fragment).
  * @returns {HTMLElement}
  */
@@ -166,4 +210,7 @@ export default async function decorate(block) {
   if (utilityInner.children.length) navWrapper.append(utility);
   navWrapper.append(nav);
   block.append(navWrapper);
+
+  // Shrink the header on scroll, expand at the top (matches source).
+  setupScrollShrink(block.closest('header') || block);
 }
