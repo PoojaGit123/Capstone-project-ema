@@ -2,7 +2,11 @@
 
 .cards > ul {
   list-style: none;
-  margin: 0;
+
+  /* 2rem below the grid so the following CTA ("All Trips") is spaced away,
+     matching the source (its cards carry a 32px bottom margin). Placed on the
+     list — not each card — so grid row-gap isn't doubled on multi-row layouts. */
+  margin: 0 0 2rem;
   padding: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);

@@ -119,10 +119,11 @@ export default function decorate(block) {
   if (!isSingleSlide) {
     const slideIndicatorsNav = document.createElement('nav');
     slideIndicatorsNav.setAttribute('aria-label', labels.carouselSlideControls);
+    // The nav is the control bar below the panel: dots centered, arrows right.
+    slideIndicatorsNav.classList.add('carousel-hero-controls');
     slideIndicators = document.createElement('ol');
     slideIndicators.classList.add('carousel-hero-slide-indicators');
     slideIndicatorsNav.append(slideIndicators);
-    block.append(slideIndicatorsNav);
 
     const slideNavButtons = document.createElement('div');
     slideNavButtons.classList.add('carousel-hero-navigation-buttons');
@@ -131,7 +132,9 @@ export default function decorate(block) {
       <button type="button" class="slide-next" aria-label="${labels.nextSlide}"></button>
     `;
 
-    container.append(slideNavButtons);
+    // Arrows live inside the control bar, inline with the dots (matches source).
+    slideIndicatorsNav.append(slideNavButtons);
+    block.append(slideIndicatorsNav);
   }
 
   rows.forEach((row, idx) => {

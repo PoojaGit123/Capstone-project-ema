@@ -124,7 +124,17 @@ function decorateButtons(main) {
     // require authored formatting for buttonization
     const strong = a.closest('strong');
     const em = a.closest('em');
-    if (!strong && !em) return;
+    if (!strong && !em) {
+      // A standalone link that is the whole paragraph inside default content
+      // (e.g. "All Articles", "All Trips") is a section CTA — the source
+      // renders these as solid WKND buttons. Hero/teaser CTAs live inside
+      // blocks, so this only catches block-less default content.
+      if (p.closest('.default-content-wrapper')) {
+        p.classList.add('button-wrapper', 'cta-wrapper');
+        a.className = 'button cta';
+      }
+      return;
+    }
 
     p.className = 'button-wrapper';
     a.className = 'button';
