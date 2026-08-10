@@ -75,3 +75,71 @@
 .tabs .tabs-panel li {
   line-height: 1.6;
 }
+
+/* ===== Adventure-listing filter tabs (.tabs-cards) =====
+   Every panel is a card grid. The "All" panel is a decorated `.cards` block;
+   the category panels are raw <ul> lists (image link + title/description).
+   Style both as the same 4-up responsive grid to match the source, where all
+   tabs render identical adventure cards. */
+.tabs-cards .tabs-panel > div > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px 14px;
+}
+
+.tabs-cards .tabs-panel > div > ul > li {
+  margin: 0 0 2rem;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* first <p> in each list item holds the image link */
+.tabs-cards .tabs-panel > div > ul > li > p:first-child {
+  margin: 0;
+  line-height: 0;
+}
+
+.tabs-cards .tabs-panel > div > ul > li img {
+  width: 100%;
+  aspect-ratio: 13 / 10;
+  object-fit: cover;
+  margin: 0;
+}
+
+/* second <p> holds the title link followed by the description text */
+.tabs-cards .tabs-panel > div > ul > li > p:last-child {
+  margin: 9px 0 0;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.tabs-cards .tabs-panel > div > ul > li > p:last-child a {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--body-font-family);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 27px;
+  text-transform: uppercase;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.tabs-cards .tabs-panel > div > ul > li > p:last-child a:hover {
+  text-decoration: underline;
+}
+
+@media (width >= 600px) {
+  .tabs-cards .tabs-panel > div > ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width >= 900px) {
+  .tabs-cards .tabs-panel > div > ul {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
