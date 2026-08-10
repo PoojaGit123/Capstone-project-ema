@@ -55,6 +55,10 @@ body {
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
   line-height: 1.6;
+
+  /* Guard against horizontal scroll from full-bleed sections (hero/carousel);
+     the source site behaves the same way. */
+  overflow-x: hidden;
 }
 
 body.appear {

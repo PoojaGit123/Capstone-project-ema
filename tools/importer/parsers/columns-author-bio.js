@@ -39,8 +39,14 @@ export default function parse(element, { document }) {
     textCell.push(h2);
   }
 
-  // Role / occupations (e.g. "Skater, Writer").
-  const roleEl = element.querySelector('.cmp-byline__occupations, .cmp-byline p');
+  // Role / occupations (e.g. "Skater, Writer"). The article byline uses
+  // `.cmp-byline__occupations`; the about-us contributor XF uses an <h5>
+  // (`.cmp-title__text` inside an h5) below the name <h3>.
+  let roleEl = element.querySelector('.cmp-byline__occupations, .cmp-byline p');
+  if (!roleEl) {
+    const h5 = element.querySelector('h5');
+    roleEl = h5 && h5 !== nameEl ? h5 : null;
+  }
   const roleText = roleEl ? roleEl.textContent.trim() : '';
   if (roleText) {
     const p = document.createElement('p');

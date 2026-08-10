@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "url": "https://wknd.site/us/en/adventures/downhill-skiing-wyoming.html",
+  "path": "us/en/adventures/downhill-skiing-wyoming",
+  "timestamp": "2026-08-05T19:59:19.811Z",
+  "title": "Downhill Skiing Wyoming",
+  "template": "adventure-detail",
+  "blocks": [
+    "carousel-hero",
+    "adventure-details",
+    "tabs"
+  ]
+}

@@ -157,6 +157,235 @@
           ]
         }
       ]
+    },
+    {
+      "name": "adventure-detail",
+      "urls": [
+        "https://wknd.site/us/en/adventures/bali-surf-camp.html",
+        "https://wknd.site/us/en/adventures/beervana-portland.html",
+        "https://wknd.site/us/en/adventures/climbing-new-zealand.html",
+        "https://wknd.site/us/en/adventures/colorado-rock-climbing.html",
+        "https://wknd.site/us/en/adventures/cycling-southern-utah.html",
+        "https://wknd.site/us/en/adventures/cycling-tuscany.html",
+        "https://wknd.site/us/en/adventures/downhill-skiing-wyoming.html",
+        "https://wknd.site/us/en/adventures/gastronomic-marais-tour.html",
+        "https://wknd.site/us/en/adventures/napa-wine-tasting.html",
+        "https://wknd.site/us/en/adventures/riverside-camping-australia.html",
+        "https://wknd.site/us/en/adventures/ski-touring-mont-blanc.html",
+        "https://wknd.site/us/en/adventures/surf-camp-costa-rica.html",
+        "https://wknd.site/us/en/adventures/tahoe-skiing.html",
+        "https://wknd.site/us/en/adventures/west-coast-cycling.html",
+        "https://wknd.site/us/en/adventures/whistler-mountain-biking.html",
+        "https://wknd.site/us/en/adventures/yosemite-backpacking.html"
+      ],
+      "representativeUrl": "https://wknd.site/us/en/adventures/bali-surf-camp.html",
+      "coverageGaps": [],
+      "description": "Adventure trip detail page: breadcrumb, hero image carousel, title, adventure details list (activity/type/length/group/difficulty/price), and tabbed content (Overview/Itinerary/What to Bring).",
+      "blocks": [
+        {
+          "name": "carousel-hero",
+          "instances": [
+            "div.carousel.panelcontainer.cmp-carousel--mini"
+          ]
+        },
+        {
+          "name": "adventure-details",
+          "instances": [
+            "div.contentfragment.cmp-contentfragment--elements"
+          ]
+        },
+        {
+          "name": "tabs",
+          "instances": [
+            "div.tabs.panelcontainer"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "ad2",
+          "name": "hero-carousel",
+          "selector": "div.carousel.panelcontainer.cmp-carousel--mini",
+          "style": null,
+          "blocks": [
+            "carousel-hero"
+          ],
+          "defaultContent": [
+            "nav.cmp-breadcrumb"
+          ]
+        },
+        {
+          "id": "ad4",
+          "name": "adventure-details",
+          "selector": "div.contentfragment.cmp-contentfragment--elements",
+          "style": null,
+          "blocks": [
+            "adventure-details"
+          ],
+          "defaultContent": [
+            "div.title.cmp-title--underline"
+          ]
+        },
+        {
+          "id": "ad7",
+          "name": "adventure-tabs",
+          "selector": "div.tabs.panelcontainer",
+          "style": null,
+          "blocks": [
+            "tabs"
+          ],
+          "defaultContent": [
+            "div.sharing"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "faq",
+      "urls": [
+        "https://wknd.site/us/en/faqs.html"
+      ],
+      "representativeUrl": "https://wknd.site/us/en/faqs.html",
+      "coverageGaps": [],
+      "description": "FAQ page: title, intro image + text, accordion of Q&A, and a contact/help section.",
+      "blocks": [
+        {
+          "name": "accordion",
+          "instances": [
+            "div.accordion.panelcontainer"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "fa",
+          "name": "faq-accordion",
+          "selector": "div.accordion.panelcontainer",
+          "style": null,
+          "blocks": [
+            "accordion"
+          ],
+          "defaultContent": [
+            "main div.title.cmp-title--underline"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "adventure-listing",
+      "urls": [
+        "https://wknd.site/us/en/adventures.html"
+      ],
+      "representativeUrl": "https://wknd.site/us/en/adventures.html",
+      "coverageGaps": [],
+      "description": "Adventures listing page: hero and tabbed/grid listing of adventure cards.",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div.teaser.cmp-teaser--hero"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "div.tabs.panelcontainer .cmp-tabs__tabpanel--active div.image-list.list",
+            "div.tabs.panelcontainer div.image-list.list"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "av2",
+          "name": "intro-teaser",
+          "selector": "div.teaser.cmp-teaser--hero",
+          "style": null,
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": [
+            "main div.title:has(#title-e8e3276d1e)"
+          ]
+        },
+        {
+          "id": "av4",
+          "name": "adventures-listing",
+          "selector": "div.tabs.panelcontainer",
+          "style": null,
+          "blocks": [
+            "cards"
+          ],
+          "defaultContent": [
+            "div.title.cmp-title--underline:has(#title-dffa0ffaf3)"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "section-landing",
+      "urls": [
+        "https://wknd.site/us/en/about-us.html",
+        "https://wknd.site/us/en/magazine.html"
+      ],
+      "representativeUrl": "https://wknd.site/us/en/about-us.html",
+      "coverageGaps": [],
+      "description": "Section landing page: stacked hero teasers and/or a cards grid (about-us, magazine index).",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div.teaser.cmp-teaser--featured"
+          ]
+        },
+        {
+          "name": "article-list",
+          "instances": [
+            "main div.image-list.list"
+          ]
+        },
+        {
+          "name": "columns-author-bio",
+          "instances": [
+            ".experiencefragment.cmp-experience-fragment--contributor"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "sl-mag-feat",
+          "name": "featured",
+          "selector": "div.teaser.cmp-teaser--featured",
+          "style": null,
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "sl-mag-list",
+          "name": "all-articles",
+          "selector": "main div.image-list.list",
+          "style": null,
+          "blocks": [
+            "article-list"
+          ],
+          "defaultContent": [
+            "main div.title.cmp-title--underline"
+          ]
+        },
+        {
+          "id": "sl-au",
+          "name": "contributors",
+          "selector": ".experiencefragment.cmp-experience-fragment--contributor",
+          "style": null,
+          "blocks": [
+            "columns-author-bio"
+          ],
+          "defaultContent": [
+            "main div.title.cmp-title--underline"
+          ]
+        }
+      ]
     }
   ]
 }

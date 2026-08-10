@@ -3,16 +3,24 @@
 /**
  * Parser for variant: carousel-hero
  * Base block: carousel-hero (carousel)
- * Source URL: https://wknd.site/us/en.html
- * Source selector: div.carousel.panelcontainer.cmp-carousel--hero
+ * Source URLs:
+ *   - https://wknd.site/us/en.html  (homepage hero carousel: text + image slides)
+ *   - https://wknd.site/us/en/adventures/*.html (adventure "mini" carousel: image-only slides)
+ * Source selectors:
+ *   - div.carousel.panelcontainer.cmp-carousel--hero  (homepage)
+ *   - div.carousel.panelcontainer.cmp-carousel--mini  (adventure detail)
  * Generated: 2026-08-05
  *
  * Structure (from library-description.txt): 2-column table.
  * Row 1: block name. Each subsequent row = one slide:
- *   cell 1 = image (mandatory), cell 2 = content (heading + description + CTA).
+ *   cell 1 = image (mandatory), cell 2 = content (heading + description + CTA, optional).
  *
- * Source is an AEM carousel: each `.cmp-carousel__item` holds a teaser with a
- * title (h2), description, single CTA action link, and a background image.
+ * Both source variants are AEM carousels using `.cmp-carousel__item` per slide:
+ *   - Homepage: each item is a teaser with a title (h2), description, CTA action link,
+ *     and a background image.
+ *   - Adventure mini: each item is just a `.cmp-image` (image-only, no text panel).
+ * The parser handles both: it emits an image cell plus a content cell that is empty
+ * when no heading/description/CTA exists, so image-only slides are never dropped.
  */
 export default function parse(element, { document }) {
   // Each carousel item is a slide.

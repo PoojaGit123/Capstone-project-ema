@@ -39,12 +39,12 @@
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 2.5; /* source computed 45px on 18px pretitle */
   color: var(--text-color);
 }
 
 .hero .hero-content h2 {
-  margin: 0 0 18px;
+  margin: 18px 0; /* source .cmp-teaser__title margin 18px 0 */
   font-family: var(--heading-font-family);
   font-size: var(--heading-font-size-xl);
   font-weight: 400;
@@ -64,35 +64,47 @@
   line-height: 1.75;
 }
 
-.hero-adventure .hero-content p {
-  line-height: 1.6;
-}
-
-/* CTA: WKND-style uppercase underlined link (dark, not the blue default).
-   The CTA is the last paragraph in the content cell containing a link. */
-.hero .hero-content p:last-child {
+.hero-adventure .hero-content h2 {
   margin: 0;
 }
 
+.hero-adventure .hero-content p {
+  margin: 0;
+  line-height: 1.75;
+}
+
+/* CTA: WKND solid-yellow uppercase button (brand primary #ffea00), shared by
+   both variants. Source rule: .cmp-teaser__action-link {
+     background:#ffea00; color:#202020; padding:1em 2.5em (14px 35px);
+     font:14px/600 uppercase; border-radius:0; }
+   The container paragraph carries the 18px vertical rhythm. The CTA is the
+   last paragraph in the content cell containing a link. */
+.hero .hero-content p:last-child {
+  margin: 18px 0;
+}
+
 .hero .hero-content p:last-child a:any-link {
-  display: inline;
-  padding: 0;
+  display: inline-block;
+  padding: 14px 35px;
   border: none;
-  background: none;
+  border-radius: 0;
+  background-color: var(--hero-cta-color, #ffea00);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-xs);
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: normal;
   line-height: 1.5;
   text-transform: uppercase;
   text-decoration: none;
-  text-underline-offset: 3px;
 }
 
+/* Source featured/adventure teasers keep the same yellow on hover
+   (only the card variant changes on hover). */
 .hero .hero-content p:last-child a:any-link:hover {
-  color: var(--link-color);
-  text-decoration: underline;
+  background-color: var(--hero-cta-color, #ffea00);
+  color: var(--text-color);
+  text-decoration: none;
 }
 
 /* ============================================================
@@ -104,14 +116,34 @@
 }
 
 /* ============================================================
-   ADVENTURE variant -- full-width image on top, text below
+   ADVENTURE variant -- full-bleed cinematic image with a white
+   content card that overlaps the image bottom (matches WKND
+   cmp-teaser--hero / --imagebottom, shared by homepage + listing)
    ============================================================ */
-.hero-adventure .hero-image img {
-  aspect-ratio: 2 / 1;
+
+/* Break the block out of the 1200px section container to full width.
+   Its section wrapper (.hero-container > .hero-wrapper) supplies the 1200px
+   cap + side padding; overriding those to full width is scrollbar-safe,
+   unlike `width: 100vw` which includes the vertical scrollbar and causes
+   horizontal overflow. */
+.section.hero-container:has(.hero-adventure) > .hero-wrapper {
+  max-width: 100%;
+  padding: 0;
 }
 
+.hero-adventure .hero-image img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 4; /* 1440x640 source */
+}
+
+/* white content card, centered, pulled up over the image */
 .hero-adventure .hero-content {
-  padding: 24px 0 0;
+  position: relative;
+  max-width: var(--content-max-width);
+  margin: -56px auto 0;
+  padding: 18px 28px 24px;
+  background-color: var(--background-color);
 }
 
 /* ============================================================
@@ -143,8 +175,9 @@
     padding: 63px 36px 36px;
   }
 
-  /* Adventure: a bit more top spacing on desktop */
+  /* Adventure: white card overlaps the tall image by -180px (WKND source) */
   .hero-adventure .hero-content {
-    padding: 32px 0 0;
+    margin-top: -180px;
+    padding: 18px 28px 24px;
   }
 }
