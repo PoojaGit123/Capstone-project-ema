@@ -141,6 +141,13 @@ export default function decorate(block) {
     const slide = createSlide(row, idx, carouselId);
     slidesWrapper.append(slide);
 
+    // The first slide's image is the hero / LCP candidate — never let it be
+    // lazy-loaded (fetchpriority is set on the single true candidate in
+    // scripts.js loadEager, so we don't compete for priority here).
+    if (idx === 0) {
+      slide.querySelector('img')?.setAttribute('loading', 'eager');
+    }
+
     if (slideIndicators) {
       const indicator = document.createElement('li');
       indicator.classList.add('carousel-hero-slide-indicator');

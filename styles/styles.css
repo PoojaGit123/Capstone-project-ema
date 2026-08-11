@@ -1,5 +1,29 @@
 @import url('brand.css');
 
+/* Metric-matched fallback fonts (defined here, in the render-critical CSS, so
+   they exist at first paint). Each wraps a system font with size-adjust +
+   ascent/descent overrides so it occupies the SAME line box as the real web
+   font (Asar / Source Sans Pro, loaded lazily via fonts.css). Referenced right
+   after the web font in the --*-font-family stacks below, this removes the
+   layout shift (CLS) that otherwise happens when the web font swaps in. */
+@font-face {
+  font-family: 'Asar Fallback';
+  src: local('Georgia');
+  size-adjust: 106%;
+  ascent-override: 95%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Source Sans Pro Fallback';
+  src: local('Arial');
+  size-adjust: 98.5%;
+  ascent-override: 105%;
+  descent-override: 29%;
+  line-gap-override: 0%;
+}
+
 /*
  * Copyright 2020 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
@@ -17,9 +41,11 @@
   --light-color: var(--section-light-color);
   --dark-color: var(--section-dark-color);
 
-  /* fonts — Source Sans Pro (body), Asar (headings) */
-  --body-font-family: 'Source Sans Pro', 'Helvetica Neue', helvetica, arial, sans-serif;
-  --heading-font-family: 'Asar', georgia, 'Times New Roman', times, serif;
+  /* fonts — Source Sans Pro (body), Asar (headings). The *-Fallback families
+     are metric-matched (see fonts.css) so the pre-swap fallback occupies the
+     same space as the web font — eliminates layout shift (CLS) on font load. */
+  --body-font-family: 'Source Sans Pro', 'Source Sans Pro Fallback', 'Helvetica Neue', helvetica, arial, sans-serif;
+  --heading-font-family: 'Asar', 'Asar Fallback', georgia, 'Times New Roman', times, serif;
 
   /* body sizes */
   --body-font-size-m: 18px;
@@ -65,8 +91,25 @@ body.appear {
   display: block;
 }
 
+/* Reserve the header's real rendered height from first paint using min-height
+   (not height) so it survives header.css setting `height: auto` on the still-
+   empty, not-yet-decorated header — otherwise the header collapses 64px→0 (lazy
+   CSS applies) and then expands 0→213px (block decorates), and each step shoves
+   <main> up/down. Those two jumps were the entire first-load CLS. Once the block
+   is decorated we drop the reservation so the scroll-shrink can size the header
+   naturally. Mobile ≈ 109px, desktop ≈ 213px. */
 header {
-  height: var(--nav-height);
+  min-height: 109px;
+}
+
+header:has(.header[data-block-status='loaded']) {
+  min-height: 0;
+}
+
+@media (width >= 900px) {
+  header {
+    min-height: 213px;
+  }
 }
 
 header .header,
@@ -358,6 +401,16 @@ main .section.highlight {
   background-color: var(--light-color);
   margin: 0;
   padding: 40px 0;
+}
+
+/* Keep a section hidden until its blocks have decorated (aem.js flips
+   data-section-status to "loaded" and clears the inline display). Without this
+   the raw, undecorated block markup paints first and then collapses/reflows as
+   each block's CSS+JS apply — the large first-load layout shift (CLS) on <main>.
+   Sections with only default content (no blocks) are shown immediately. */
+main .section[data-section-status='loading'],
+main .section[data-section-status='initialized'] {
+  display: none;
 }
 
 /* Section-title underline accent (WKND cmp-title--underline): standalone section
