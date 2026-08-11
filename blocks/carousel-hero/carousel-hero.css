@@ -9,6 +9,12 @@
 
 .carousel-hero {
   position: relative;
+
+  /* Reserve the block's rendered height before its JS decorates + the slide
+     image loads, so the rest of <main> doesn't jump down (removes the large
+     first-load layout shift / CLS). Mobile ≈ full-bleed image (~211px) + content
+     panel; desktop is the fixed 640px image band + controls. */
+  min-height: 460px;
 }
 
 .carousel-hero .carousel-hero-slides-container {
@@ -230,6 +236,17 @@
 }
 
 @media (width >= 900px) {
+  /* Desktop: image band (640px) + controls ≈ 685px. Reserve it before load so
+     content below doesn't jump (CLS). */
+  .carousel-hero {
+    min-height: 685px;
+  }
+
+  /* Banner variant is a shorter fixed 400px image with no content panel. */
+  .carousel-hero-banner {
+    min-height: 400px;
+  }
+
   /* Source hero image is a fixed 640px tall band (same at 1200 & 1440),
      not an aspect-ratio scale. */
   .carousel-hero .carousel-hero-slide .carousel-hero-slide-image img {

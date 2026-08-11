@@ -19,7 +19,16 @@ export default async function decorate(block) {
   const imageRow = rows.find((row) => row.querySelector('picture'));
   const contentRow = rows.find((row) => row !== imageRow);
 
-  if (imageRow) imageRow.classList.add('hero-image');
+  if (imageRow) {
+    imageRow.classList.add('hero-image');
+    // When this hero is the first block on the page (e.g. an article/adventure
+    // banner), its image is the LCP candidate — load it eager rather than lazy.
+    // Below-the-fold heroes (e.g. homepage "Next Adventures") stay lazy.
+    const firstSection = document.querySelector('main .section');
+    if (firstSection && firstSection.contains(block)) {
+      imageRow.querySelector('img')?.setAttribute('loading', 'eager');
+    }
+  }
   if (!contentRow) return;
 
   contentRow.classList.add('hero-content');

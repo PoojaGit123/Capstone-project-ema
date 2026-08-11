@@ -223,6 +223,19 @@ async function loadEager(doc) {
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
+
+    // Prioritize the LCP image. Its URL is already in the initial HTML, so the
+    // only thing missing is a strong signal: mark the first section's first
+    // image eager (never lazy) and fetchpriority="high" *before* loadSection
+    // requests it, so the browser puts it at the front of the network queue.
+    // Only this single candidate is elevated; every other image stays lazy so
+    // the critical path isn't flooded.
+    const lcpImg = main.querySelector('.section img');
+    if (lcpImg) {
+      lcpImg.setAttribute('loading', 'eager');
+      lcpImg.setAttribute('fetchpriority', 'high');
+    }
+
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
 

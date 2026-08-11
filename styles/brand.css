@@ -1,7 +1,7 @@
 :root {
   /* Fonts */
-  --heading-font-family: 'Asar', georgia, 'Times New Roman', times, serif;
-  --body-font-family: 'Source Sans Pro', 'Helvetica Neue', helvetica, arial, sans-serif;
+  --heading-font-family: 'Asar', 'Asar Fallback', georgia, 'Times New Roman', times, serif;
+  --body-font-family: 'Source Sans Pro', 'Source Sans Pro Fallback', 'Helvetica Neue', helvetica, arial, sans-serif;
 
   /* Colors */
   --background-color: #fff;
