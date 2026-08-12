@@ -383,6 +383,54 @@ main img {
   width: 100%;
 }
 
+/* Breadcrumb (article/section pages): WKND renders it as MAGAZINE ▶ CURRENT —
+   uppercase 14px, dark semibold links, a WKND-yellow right-pointing triangle
+   between items, laid out inline. Tagged by decorateBreadcrumb() in scripts.js. */
+ol.breadcrumb {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  /* Source: 12px on mobile, 14px from tablet up. */
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (width >= 900px) {
+  ol.breadcrumb {
+    font-size: var(--body-font-size-xs); /* 14px */
+  }
+}
+
+ol.breadcrumb li {
+  display: inline;
+  text-transform: uppercase;
+  color: var(--text-color);
+}
+
+/* Yellow ▶ separator before every item except the first */
+ol.breadcrumb li + li::before {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin: 0 10px;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 7px solid var(--brand-primary, rgb(255 234 0));
+  vertical-align: middle;
+}
+
+ol.breadcrumb a:any-link {
+  color: var(--text-color);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+ol.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
 /* sections */
 main > .section {
   margin: 40px 0;
