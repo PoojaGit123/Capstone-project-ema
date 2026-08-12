@@ -12,9 +12,9 @@
 
   /* Reserve the block's rendered height before its JS decorates + the slide
      image loads, so the rest of <main> doesn't jump down (removes the large
-     first-load layout shift / CLS). Mobile ≈ full-bleed image (~211px) + content
-     panel; desktop is the fixed 640px image band + controls. */
-  min-height: 460px;
+     first-load layout shift / CLS). Mobile ≈ 16:9 image (~219px) + content
+     stacked below + controls (≈545px total); desktop is the fixed 640px band. */
+  min-height: 545px;
 }
 
 .carousel-hero .carousel-hero-slides-container {
@@ -59,7 +59,8 @@
 }
 
 .carousel-hero .carousel-hero-slide .carousel-hero-slide-image img {
-  aspect-ratio: 3 / 2;
+  /* Source mobile hero is a 16:9 band (≈219px at 390px wide), not 3:2. */
+  aspect-ratio: 16 / 9;
   height: auto;
   object-fit: cover;
 }
@@ -74,9 +75,13 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: -90px 16px 0;
-  padding: 4px 24px 24px;
-  background-color: var(--background-color);
+
+  /* Mobile (source): content sits BELOW the image, full width, transparent —
+     no overlapping white card. The desktop media query re-introduces the
+     pulled-up white panel that overlaps the image. */
+  margin: 0;
+  padding: 0 14px 24px;
+  background-color: transparent;
   color: var(--text-color);
 }
 
@@ -259,14 +264,16 @@
     height: 400px;
   }
 
-  /* Source white panel is constrained to the centered content container
-     (~1192px, inset from the full-bleed image) with 28px side padding and
-     no vertical padding — the vertical rhythm comes from child margins. */
+  /* Desktop: re-introduce the WKND white panel that overlaps the bottom of the
+     image (pulled up -180px). Constrained to the centered content container
+     (~1192px, inset from the full-bleed image) with 28px side padding; the
+     vertical rhythm comes from child margins. */
   .carousel-hero .carousel-hero-slide .carousel-hero-slide-content {
     box-sizing: border-box;
     max-width: var(--content-max-width);
     margin: -180px auto 0;
     padding: 0 28px;
+    background-color: var(--background-color);
   }
 
   .carousel-hero .carousel-hero-slide-content h2 {

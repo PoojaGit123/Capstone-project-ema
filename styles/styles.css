@@ -9,7 +9,12 @@
 @font-face {
   font-family: 'Asar Fallback';
   src: local('Georgia');
-  size-adjust: 106%;
+
+  /* Asar is a notably narrow serif; Georgia at 100% runs ~20% wider. size-adjust
+     88% tracks Asar's glyph width so headings keep the same line count before and
+     after the web font swaps in (avoids a font-swap layout shift). Vertical
+     overrides below are unchanged (previously tuned). */
+  size-adjust: 88%;
   ascent-override: 95%;
   descent-override: 24%;
   line-gap-override: 0%;
@@ -54,7 +59,11 @@
 
   /* heading sizes (mobile-first) */
   --heading-font-size-xxl: 36px;
-  --heading-font-size-xl: 28px;
+
+  /* Source renders every mobile h2 (carousel, featured hero, section headings)
+     at 36px — the xl token maps only to h2 (card titles are h3, page title h1),
+     so this matches source mobile without touching other headings. */
+  --heading-font-size-xl: 36px;
   --heading-font-size-l: 24px;
   --heading-font-size-m: 20px;
   --heading-font-size-s: 18px;

@@ -33,6 +33,15 @@
   object-fit: cover;
 }
 
+/* Reserve the featured image's height on mobile (16:9, matches source) so its
+   late load doesn't reflow the section — without this the reordered
+   text-above-image layout shifts as the image arrives (CLS). The desktop grid
+   gives the image an explicit height instead, so this is mobile-only. */
+.hero-featured .hero-image img {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
 /* --- content --- */
 .hero .hero-content .eyebrow {
   margin: 0 0 13.5px;
@@ -110,6 +119,16 @@
 /* ============================================================
    FEATURED variant -- image beside a light-grey content panel
    ============================================================ */
+
+/* Mobile: source stacks the text panel ABOVE the image (text-then-image).
+   Our DOM is image-first, so reverse the column at mobile. The desktop grid
+   (≥900px, below) overrides this, and DOM order is unchanged so the LCP
+   eager-load logic in hero.js is unaffected. */
+.hero-featured {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 .hero-featured .hero-content {
   padding: 36px 24px;
   background-color: #ebebeb;
@@ -134,16 +153,20 @@
 .hero-adventure .hero-image img {
   width: 100%;
   height: auto;
-  aspect-ratio: 9 / 4; /* 1440x640 source */
+
+  /* Mobile: source image is a ~3:2 band (~260px at 390px). Desktop switches to
+     the tall 9:4 cinematic band below. */
+  aspect-ratio: 3 / 2;
 }
 
-/* white content card, centered, pulled up over the image */
+/* Mobile (source): content stacks BELOW the image, full width, transparent —
+   no overlapping white card. Desktop re-introduces the pulled-up white card. */
 .hero-adventure .hero-content {
   position: relative;
   max-width: var(--content-max-width);
-  margin: -56px auto 0;
-  padding: 18px 28px 24px;
-  background-color: var(--background-color);
+  margin: 0 auto;
+  padding: 18px 14px 24px;
+  background-color: transparent;
 }
 
 /* ============================================================
@@ -175,9 +198,15 @@
     padding: 63px 36px 36px;
   }
 
-  /* Adventure: white card overlaps the tall image by -180px (WKND source) */
+  /* Adventure: tall 9:4 cinematic image with the white card overlapping it by
+     -180px (WKND source). */
+  .hero-adventure .hero-image img {
+    aspect-ratio: 9 / 4; /* 1440x640 source */
+  }
+
   .hero-adventure .hero-content {
     margin-top: -180px;
     padding: 18px 28px 24px;
+    background-color: var(--background-color);
   }
 }
