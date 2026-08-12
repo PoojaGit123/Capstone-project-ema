@@ -71,6 +71,19 @@
   text-decoration: underline;
 }
 
+/* Publish date (related-stories cards only): source is Source Sans Pro 400,
+   12px, uppercase, grey, sitting just under the title. */
+.article-list .article-list-card-body .article-list-card-date {
+  display: block;
+  margin: 6px 0 0;
+  font-family: var(--body-font-family);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: rgb(105 105 105);
+}
+
 /* Description: source is Source Sans Pro 400, 14px/21px, uppercase, grey,
  * truncated to a single line with an ellipsis (nowrap/hidden/ellipsis). */
 .article-list .article-list-card-body p {

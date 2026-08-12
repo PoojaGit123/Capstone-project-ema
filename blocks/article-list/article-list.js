@@ -68,12 +68,41 @@ function sortNewestFirst(rows) {
   return [...rows].sort((a, b) => ts(b) - ts(a));
 }
 
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/**
+ * Format an index date into the WKND long form, e.g. "Thursday, 9 Jul 2020".
+ * Accepts an ISO date ("2019-08-13") or an epoch-seconds string. Returns '' when
+ * the value is missing or unparseable. Built from fixed UTC parts (not
+ * toLocaleDateString) so the output matches the source exactly ("Sep", not
+ * locale variants like "Sept") and the day never shifts across time zones.
+ * @param {string|number} value publisheddate or date field
+ * @returns {string}
+ */
+function formatArticleDate(value) {
+  if (!value) return '';
+  let ms;
+  const num = Number(value);
+  if (!Number.isNaN(num) && num > 0) {
+    ms = num * 1000; // index stores epoch seconds
+  } else {
+    ms = Date.parse(`${value}T00:00:00Z`);
+    if (Number.isNaN(ms)) ms = Date.parse(value);
+  }
+  if (Number.isNaN(ms)) return '';
+  const d = new Date(ms);
+  return `${WEEKDAYS[d.getUTCDay()]}, ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+}
+
 /**
  * Build a single article card element from an index row.
- * @param {object} row index row (path, title, image, description)
+ * @param {object} row index row (path, title, image, description, publisheddate)
+ * @param {object} [opts] rendering options
+ * @param {boolean} [opts.showDate] append the publish date under the title
  * @returns {HTMLElement}
  */
-function renderCard(row) {
+function renderCard(row, opts = {}) {
   const li = document.createElement('li');
   const href = normalizePath(row.path);
 
@@ -95,6 +124,20 @@ function renderCard(row) {
   h3.textContent = row.title || '';
   titleLink.append(h3);
   body.append(titleLink);
+
+  // Related-stories cards show the publish date beneath the title (matches
+  // source). Uses <time> for semantics; only rendered when a date is available.
+  if (opts.showDate) {
+    const label = formatArticleDate(row.publisheddate || row.date);
+    if (label) {
+      const time = document.createElement('time');
+      time.className = 'article-list-card-date';
+      const iso = row.publisheddate || row.date;
+      if (/^\d{4}-\d{2}-\d{2}/.test(iso)) time.setAttribute('datetime', iso);
+      time.textContent = label;
+      body.append(time);
+    }
+  }
 
   if (row.description) {
     const p = document.createElement('p');
@@ -170,9 +213,17 @@ export default async function decorate(block) {
     if (selected.length < limit) push(row);
   });
 
-  // 5. Render.
+  // 5. Render. On article-detail pages this block is the "related stories"
+  //    sidebar, where the source shows a publish date under each title; on the
+  //    homepage / section-landing "Recent Articles" listing it does not. The
+  //    author-bio block only exists on article-detail pages, so use it as the
+  //    signal (also settable explicitly via a "dates" config row).
+  const isArticleDetail = !!document.querySelector('main .columns-author-bio, main .article-detail');
+  const showDate = (config.dates || '').toLowerCase() === 'true' || isArticleDetail;
+  if (showDate) block.classList.add('article-list-with-dates');
+
   const ul = document.createElement('ul');
-  selected.slice(0, limit).forEach((row) => ul.append(renderCard(row)));
+  selected.slice(0, limit).forEach((row) => ul.append(renderCard(row, { showDate })));
 
   block.replaceChildren(ul);
 

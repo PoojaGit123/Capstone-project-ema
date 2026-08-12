@@ -200,6 +200,69 @@ function decorateButtons(main) {
 }
 
 /**
+ * Tags the article breadcrumb list so it can be styled to match the source
+ * (uppercase items, yellow "▶" separators, dark links). The WKND import renders
+ * the breadcrumb as a plain <ol> — links to ancestor pages followed by a
+ * text-only item for the current page — placed before the article <h1>. We only
+ * mark that specific shape so ordinary ordered lists in body copy are untouched.
+ * @param {HTMLElement} main The main container element
+ */
+function decorateBreadcrumb(main) {
+  main.querySelectorAll('ol').forEach((ol) => {
+    if (ol.closest('.block')) return; // never touch lists inside blocks
+    const items = [...ol.children].filter((li) => li.tagName === 'LI');
+    if (items.length < 2) return;
+
+    // Breadcrumb shape: every item is a lone link or plain text, at least one
+    // is a link, and the last item is the current page (text, no link).
+    const isCrumb = items.every((li) => {
+      const links = li.querySelectorAll('a');
+      return links.length <= 1 && (links.length === 1 || !!li.textContent.trim());
+    });
+    const hasLink = items.some((li) => li.querySelector('a'));
+    const lastIsText = !items[items.length - 1].querySelector('a');
+
+    // Only a leading breadcrumb: no heading appears among the list's preceding
+    // siblings (it sits above the article title, not inside body copy).
+    let sib = ol.previousElementSibling;
+    let headingBefore = false;
+    while (sib) {
+      if (/^H[1-6]$/.test(sib.tagName)) { headingBefore = true; break; }
+      sib = sib.previousElementSibling;
+    }
+
+    if (isCrumb && hasLink && lastIsText && !headingBefore) {
+      ol.classList.add('breadcrumb');
+    }
+  });
+}
+
+/**
+ * Removes the redundant article title the WKND import duplicates. Source article
+ * pages show the title once (as the <h1>) followed by the byline; our import adds
+ * a second heading (an <h3>) that repeats the title just below the byline. Drop
+ * that <h3> when it echoes the <h1> (whitespace/case-insensitive) and sits near
+ * the top of the article, so the page matches the source's single title.
+ * @param {HTMLElement} main The main container element
+ */
+function removeDuplicateTitle(main) {
+  const h1 = main.querySelector('h1');
+  if (!h1) return;
+  const norm = (s) => s.replace(/\s+/g, '').toLowerCase();
+  const titleKey = norm(h1.textContent);
+  if (!titleKey) return;
+
+  // Only look at early headings (title + byline + duplicate live together at the
+  // top); this avoids matching a genuine body-section heading later in the copy.
+  const headings = [...main.querySelectorAll('h2, h3')].slice(0, 3);
+  headings.forEach((h) => {
+    if (h.tagName === 'H3' && norm(h.textContent) === titleKey) {
+      h.remove();
+    }
+  });
+}
+
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
@@ -210,6 +273,8 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateButtons(main);
+  decorateBreadcrumb(main);
+  removeDuplicateTitle(main);
 }
 
 /**
