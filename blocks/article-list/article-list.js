@@ -157,11 +157,24 @@ export default async function decorate(block) {
   // 1. Read author configuration from key/value rows:
   //    source = folder the articles live in (e.g. /us/en/magazine/)
   //    index  = query-index.json to read (e.g. /query-index.json)
-  //    limit  = max number of cards to show
+  //    limit  = max number of cards to show. Omit the row (or set "all"/0) to
+  //             show every match — the "All Articles" listing uses this so it
+  //             grows automatically as articles are added. A positive number
+  //             caps the list (e.g. the homepage "Recent Articles" uses 4).
   const config = readBlockConfig(block);
   const source = normalizePath(config.source || DEFAULT_SOURCE);
   const index = config.index || DEFAULT_INDEX;
-  const limit = parseInt(config.limit, 10) || DEFAULT_LIMIT;
+  const rawLimit = (config.limit || '').toString().trim().toLowerCase();
+  const parsedLimit = parseInt(rawLimit, 10);
+  let limit;
+  if (!rawLimit || rawLimit === 'all' || rawLimit === 'none' || parsedLimit === 0) {
+    // No limit row, or an explicit "show all" -> render every matching article.
+    limit = Infinity;
+  } else if (!Number.isNaN(parsedLimit) && parsedLimit > 0) {
+    limit = parsedLimit;
+  } else {
+    limit = DEFAULT_LIMIT;
+  }
 
   // 2. Collect any author-pinned article links (rows that contain links).
   //    These are rendered first; the live index fills the remaining slots.
