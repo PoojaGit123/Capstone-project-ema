@@ -68,14 +68,16 @@ footer .footer-brand img {
   display: block;
 }
 
-/* Footer nav */
+/* Footer nav — mobile: a vertical list beside the logo (matches source, which
+   stacks Magazine/Adventures/FAQs/About Us in a column). Desktop switches to a
+   single horizontal row below. */
 footer .footer-brand ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
+  flex-direction: column;
+  gap: 8px;
 }
 
 footer .footer-brand ul a {
@@ -158,7 +160,7 @@ footer .footer-legal a {
   }
 
   footer .footer-brand ul {
-    flex-wrap: nowrap;
+    flex-flow: row nowrap;
   }
 
   footer .footer-social {

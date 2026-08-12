@@ -33,6 +33,13 @@ header nav {
 header nav[aria-expanded='true'] {
   overflow-y: auto;
   min-height: 100dvh;
+
+  /* Open drawer: keep the grid (hamburger/logo/search on top row, links below)
+     but pack the rows to the TOP instead of stretching them to fill 100dvh and
+     vertically centering — that stretching left a large empty gap between the
+     header row and the nav links. */
+  align-content: start;
+  row-gap: 8px;
 }
 
 @media (width >= 900px) {
@@ -135,9 +142,16 @@ header nav .nav-brand {
 header nav .nav-brand p { margin: 0; }
 
 header nav .nav-brand img {
-  width: 128px;
+  /* Mobile logo matches source (~96px); desktop uses the full 128px below. */
+  width: 96px;
   height: auto;
   display: block;
+}
+
+@media (width >= 900px) {
+  header nav .nav-brand img {
+    width: 128px;
+  }
 }
 
 /* ============ Sections (main nav links) ============ */
@@ -368,18 +382,26 @@ header nav .nav-search-submit {
   cursor: pointer;
 }
 
-/* On mobile, hide search until the menu is open; then show it in the drawer */
+/* Mobile: the source keeps the search box inline in the header (right of the
+   logo), not hidden behind the menu. Show it in the tools area and shrink it to
+   fit the narrow row alongside the hamburger + logo. */
 @media (width < 900px) {
   header nav .nav-tools {
     gap: 8px;
+    justify-self: end;
   }
 
   header nav .nav-search {
-    display: none;
+    display: block;
   }
 
-  header nav[aria-expanded='true'] .nav-search {
-    display: block;
-    grid-area: sections;
+  header nav .nav-search form {
+    height: 42px;
+    padding: 0 10px;
+  }
+
+  header nav .nav-search input {
+    /* narrower than desktop so hamburger + logo + search fit at 360–390px */
+    width: 90px;
   }
 }
