@@ -332,7 +332,7 @@ header .nav-lang-list {
   z-index: 3;
 }
 
-header .nav-lang[aria-expanded='true'] .nav-lang-list {
+header .nav-lang.nav-lang-open .nav-lang-list {
   display: block;
 }
 
@@ -383,11 +383,22 @@ header nav .nav-search input {
   letter-spacing: 0.03em;
   width: 140px;
   outline: none;
+
+  /* Fill the form height so the input's touch/click target is ~44px tall
+     (WCAG 2.5.8) without changing the visual box, which stays defined by the
+     44px form container. */
+  align-self: stretch;
+  height: auto;
 }
 
 header nav .nav-search-submit {
-  width: 20px;
-  height: 20px;
+  /* 44px-wide hit area (WCAG touch-target min); height stretches to the 44px
+     form. A 20px icon is drawn via the background so the button doesn't look
+     bigger than the source's icon. */
+  width: 44px;
+  align-self: stretch;
+  min-height: 44px;
+  flex: 0 0 auto;
   margin: 0;
   border: 0;
   border-radius: 0;
@@ -396,6 +407,7 @@ header nav .nav-search-submit {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23202020" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>');
   background-repeat: no-repeat;
   background-position: center;
+  background-size: 20px 20px;
   cursor: pointer;
 }
 
@@ -413,7 +425,8 @@ header nav .nav-search-submit {
   }
 
   header nav .nav-search form {
-    height: 42px;
+    /* keep the form ≥44px so the input + submit meet the touch-target min */
+    height: 44px;
     padding: 0 10px;
   }
 
