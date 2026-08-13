@@ -600,3 +600,65 @@ main > .article-list-container + .section > .default-content-wrapper:has(img) im
     align-items: start;
   }
 }
+
+/* ==========================================================================
+   Article detail (body.article-detail): source is a two-column layout — the
+   article prose (+ author bio) on the left, and a right rail with "SHARE THIS
+   STORY" + related stories. decorateArticleLayout() in scripts.js groups the
+   pieces into .article-layout; the rules below grid them and match the source's
+   airy typography. These body.article-detail selectors are intentionally higher
+   specificity than the earlier global/teaser rules, so descending-specificity
+   is expected here.
+   ========================================================================== */
+/* stylelint-disable no-descending-specificity */
+
+/* Two-column grid: article ~776px + ~110px gutter + ~263px rail (source). */
+body.article-detail .article-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+@media (width >= 900px) {
+  body.article-detail .article-layout {
+    grid-template-columns: 776px 263px;
+    gap: 0 110px;
+    align-items: start;
+  }
+}
+
+/* Airy body copy — source is 18px with 45px (2.5x) line-height. */
+body.article-detail .article-main p {
+  line-height: 2.5;
+}
+
+/* Article title — source h1 is 40px/60px (smaller than the global 45px xxl). */
+body.article-detail .article-main h1 {
+  font-size: 40px;
+  line-height: 1.5;
+}
+
+/* Section subheads — source h2 is 36px/54px (looser than the global 1.3). */
+body.article-detail .article-main h2 {
+  line-height: 1.5;
+}
+
+/* Right rail: "SHARE THIS STORY" + related list stacked in a single narrow
+   column (overrides the article-list's multi-column desktop grid). */
+body.article-detail .article-rail .article-list,
+body.article-detail .article-rail .article-list-wrapper {
+  width: 100%;
+}
+
+body.article-detail .article-rail .article-list ul {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+
+@media (width >= 900px) {
+  /* beat the article-list block's own 4-column desktop rule */
+  body.article-detail .article-rail .article-list ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* stylelint-enable no-descending-specificity */
