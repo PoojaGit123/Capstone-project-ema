@@ -76,8 +76,73 @@ function setupScrollShrink(header) {
   update();
 }
 
+// Folder that search results are drawn from, and the fallback destination when
+// nothing matches (so the box never lands on a dead page).
+const SEARCH_SOURCE = '/us/en/magazine/';
+const SEARCH_FALLBACK = '/us/en/magazine';
+const SEARCH_INDEX = '/query-index.json';
+
+/**
+ * Scores how well an index row matches the query. Higher is better; 0 means no
+ * match. An exact title match wins, then title-contains, then a word overlap
+ * across title + description.
+ * @param {object} row index row (title, description, path)
+ * @param {string} query lowercased search text
+ * @param {string[]} words query split into words
+ * @returns {number}
+ */
+function scoreMatch(row, query, words) {
+  const title = (row.title || '').toLowerCase();
+  const desc = (row.description || '').toLowerCase();
+  const slug = (row.path || '').toLowerCase();
+  if (!title && !desc) return 0;
+  if (title === query) return 1000;
+  let score = 0;
+  if (title.includes(query)) score += 200;
+  if (slug.includes(query.replace(/\s+/g, '-'))) score += 120;
+  words.forEach((w) => {
+    if (!w) return;
+    if (title.includes(w)) score += 40;
+    if (slug.includes(w)) score += 15;
+    if (desc.includes(w)) score += 8;
+  });
+  return score;
+}
+
+/**
+ * Resolves a search query to the best-matching article path from the query
+ * index. Returns the fallback listing path when nothing matches.
+ * @param {string} raw the user's search text
+ * @returns {Promise<string>} the path to navigate to
+ */
+async function resolveSearchTarget(raw) {
+  const query = raw.trim().toLowerCase();
+  if (!query) return SEARCH_FALLBACK;
+  const words = query.split(/\s+/);
+  try {
+    const resp = await fetch(SEARCH_INDEX);
+    if (!resp.ok) return SEARCH_FALLBACK;
+    const json = await resp.json();
+    const rows = (Array.isArray(json.data) ? json.data : [])
+      .filter((row) => (row.path || '').includes(SEARCH_SOURCE));
+    let best = null;
+    let bestScore = 0;
+    rows.forEach((row) => {
+      const s = scoreMatch(row, query, words);
+      if (s > bestScore) { bestScore = s; best = row; }
+    });
+    if (best && bestScore > 0) return best.path.replace(/\.html$/, '');
+  } catch (e) {
+    // fall through to the listing page on any index/network error
+  }
+  return SEARCH_FALLBACK;
+}
+
 /**
  * Builds the search form (form controls belong in JS, not the nav fragment).
+ * On submit it matches the query against the query index and redirects to the
+ * best-matching magazine article (a redirect-style site search); if nothing
+ * matches it falls back to the magazine listing.
  * @returns {HTMLElement}
  */
 function buildSearch() {
@@ -85,14 +150,17 @@ function buildSearch() {
   search.className = 'nav-search';
   const form = document.createElement('form');
   form.setAttribute('role', 'search');
-  form.action = '/us/en/search';
+  form.action = SEARCH_FALLBACK;
   form.innerHTML = `
     <button type="submit" class="nav-search-submit" aria-label="Search"></button>
     <input type="search" name="q" placeholder="SEARCH" aria-label="Search">
   `;
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
     const q = form.querySelector('input').value.trim();
-    if (!q) e.preventDefault();
+    if (!q) return;
+    const target = await resolveSearchTarget(q);
+    window.location.href = target;
   });
   search.append(form);
   return search;
