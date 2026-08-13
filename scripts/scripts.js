@@ -281,10 +281,24 @@ function decorateArticleLayout(main) {
   const relatedSection = main.querySelector('.section.article-list-container');
   if (!heroSection || !relatedSection) return;
 
-  // The "SHARE THIS STORY" heading sits in its own default-content-wrapper at
-  // the end of the hero section — that plus the related list forms the rail.
-  const shareWrapper = [...heroSection.querySelectorAll(':scope > .default-content-wrapper')]
-    .find((w) => w.querySelector('h5'));
+  // The prose lives in a default-content-wrapper (leading image, breadcrumb,
+  // H1, byline, body). The "SHARE THIS STORY" heading is a separate trailing
+  // wrapper; the author bio is its own block wrapper.
+  const wrappers = [...heroSection.querySelectorAll(':scope > .default-content-wrapper')];
+  const proseWrapper = wrappers.find((w) => w.querySelector('h1'));
+  const shareWrapper = wrappers.find((w) => w !== proseWrapper && w.querySelector('h5'));
+  const authorWrapper = heroSection.querySelector(':scope > .columns-author-bio-wrapper');
+  if (!proseWrapper) return;
+
+  // Full-width header (spans both columns, matches source): the leading hero
+  // image and breadcrumb sit above the two-column split. Move everything that
+  // precedes the H1 out of the prose wrapper and into the header.
+  const header = document.createElement('div');
+  header.className = 'article-header';
+  const h1 = proseWrapper.querySelector('h1');
+  while (proseWrapper.firstElementChild && proseWrapper.firstElementChild !== h1) {
+    header.append(proseWrapper.firstElementChild);
+  }
 
   const layout = document.createElement('div');
   layout.className = 'article-layout';
@@ -294,17 +308,17 @@ function decorateArticleLayout(main) {
   rail.className = 'article-rail';
   layout.append(left, rail);
 
-  // Left column: everything currently in the hero section except the share
-  // heading (prose wrapper + author-bio wrapper).
-  [...heroSection.children].forEach((child) => {
-    if (child !== shareWrapper) left.append(child);
-  });
+  // Left column: the prose (now starting at the H1) + the author bio.
+  left.append(proseWrapper);
+  if (authorWrapper) left.append(authorWrapper);
   // Right rail: share heading, then the related-stories list.
   if (shareWrapper) rail.append(shareWrapper);
   rail.append(...relatedSection.children);
 
-  // Mount the grid in the hero section and drop the now-empty related section.
-  heroSection.append(layout);
+  // Mount the full-width header (when present) above the two-column grid, then
+  // drop the now-empty related section.
+  if (header.children.length) heroSection.append(header, layout);
+  else heroSection.append(layout);
   relatedSection.remove();
 }
 

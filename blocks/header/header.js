@@ -7,7 +7,7 @@ const isDesktop = window.matchMedia('(min-width: 900px)');
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
-    const langToggle = nav.querySelector('.nav-lang[aria-expanded="true"]');
+    const langToggle = nav.querySelector('.nav-lang-toggle[aria-expanded="true"]');
     if (langToggle) {
       langToggle.setAttribute('aria-expanded', 'false');
       langToggle.focus();
@@ -163,19 +163,25 @@ export default async function decorate(block) {
     if (localeList) {
       const langWrapper = document.createElement('div');
       langWrapper.className = 'nav-lang';
-      langWrapper.setAttribute('aria-expanded', 'false');
       // trigger shows the current (first) locale
       const current = localeList.querySelector('li a');
       const trigger = document.createElement('button');
       trigger.type = 'button';
       trigger.className = 'nav-lang-toggle';
       trigger.setAttribute('aria-label', 'Choose language');
+      // aria-expanded/haspopup belong on the button (a generic <div> doesn't
+      // support them); the button controls the locale list's visibility.
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.setAttribute('aria-haspopup', 'true');
       trigger.innerHTML = current ? current.innerHTML : 'EN-US';
-      trigger.addEventListener('click', () => {
-        const open = langWrapper.getAttribute('aria-expanded') === 'true';
-        langWrapper.setAttribute('aria-expanded', open ? 'false' : 'true');
-      });
       localeList.classList.add('nav-lang-list');
+      localeList.id = localeList.id || 'nav-lang-list';
+      trigger.setAttribute('aria-controls', localeList.id);
+      trigger.addEventListener('click', () => {
+        const open = trigger.getAttribute('aria-expanded') === 'true';
+        trigger.setAttribute('aria-expanded', open ? 'false' : 'true');
+        langWrapper.classList.toggle('nav-lang-open', !open);
+      });
       langWrapper.append(trigger, localeList);
       utilityInner.append(langWrapper);
     }
@@ -197,8 +203,11 @@ export default async function decorate(block) {
   // Reset menu / close dropdowns on breakpoint change
   const onViewportChange = () => {
     toggleMenu(nav, isDesktop.matches);
-    const openLang = nav.querySelector('.nav-lang[aria-expanded="true"]');
-    if (openLang) openLang.setAttribute('aria-expanded', 'false');
+    const openLang = nav.querySelector('.nav-lang-toggle[aria-expanded="true"]');
+    if (openLang) {
+      openLang.setAttribute('aria-expanded', 'false');
+      openLang.closest('.nav-lang').classList.remove('nav-lang-open');
+    }
   };
   toggleMenu(nav, isDesktop.matches);
   isDesktop.addEventListener('change', onViewportChange);

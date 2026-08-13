@@ -122,8 +122,17 @@
   margin-bottom: 0;
 }
 
+/* Card box: source is a 5px light-grey left border with 8px/16px padding; on
+   hover the whole box fills with the WKND brand yellow and the border darkens. */
 .article-list.article-list-compact .article-list-card-body {
-  padding: 0;
+  padding: 8px 16px;
+  border-left: 5px solid rgb(235 235 235);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.article-list.article-list-compact .article-list-card-body:hover {
+  background-color: var(--brand-primary, rgb(255 234 0));
+  border-left-color: var(--text-color, rgb(32 32 32));
 }
 
 .article-list.article-list-compact .article-list-card-date {

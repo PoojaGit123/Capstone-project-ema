@@ -612,6 +612,18 @@ main > .article-list-container + .section > .default-content-wrapper:has(img) im
    ========================================================================== */
 /* stylelint-disable no-descending-specificity */
 
+/* Full-width header: leading hero image + breadcrumb span both columns and sit
+   above the two-column split (matches source). */
+body.article-detail .article-header {
+  margin-bottom: 24px;
+}
+
+body.article-detail .article-header img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* Two-column grid: article ~776px + ~110px gutter + ~263px rail (source). */
 body.article-detail .article-layout {
   display: grid;
