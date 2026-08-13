@@ -100,13 +100,16 @@ function formatArticleDate(value) {
  * @param {object} row index row (path, title, image, description, publisheddate)
  * @param {object} [opts] rendering options
  * @param {boolean} [opts.showDate] append the publish date under the title
+ * @param {boolean} [opts.compact] text-only card (no image/description) — used
+ *   by the article-detail "Share this story" rail, which the source renders as
+ *   a plain title + date list.
  * @returns {HTMLElement}
  */
 function renderCard(row, opts = {}) {
   const li = document.createElement('li');
   const href = normalizePath(row.path);
 
-  if (row.image) {
+  if (row.image && !opts.compact) {
     const imageLink = document.createElement('a');
     imageLink.href = href;
     imageLink.className = 'article-list-card-image';
@@ -139,7 +142,7 @@ function renderCard(row, opts = {}) {
     }
   }
 
-  if (row.description) {
+  if (row.description && !opts.compact) {
     const p = document.createElement('p');
     p.textContent = row.description;
     body.append(p);
@@ -235,8 +238,15 @@ export default async function decorate(block) {
   const showDate = (config.dates || '').toLowerCase() === 'true' || isArticleDetail;
   if (showDate) block.classList.add('article-list-with-dates');
 
+  // In the article-detail right rail ("Share this story"), the source renders
+  // each related story as a plain title + date — no thumbnail, no description.
+  // decorateArticleLayout() has already moved this block into .article-rail by
+  // the time it decorates, so detect that to switch to the compact layout.
+  const compact = !!block.closest('.article-rail');
+  if (compact) block.classList.add('article-list-compact');
+
   const ul = document.createElement('ul');
-  selected.slice(0, limit).forEach((row) => ul.append(renderCard(row, { showDate })));
+  selected.slice(0, limit).forEach((row) => ul.append(renderCard(row, { showDate, compact })));
 
   block.replaceChildren(ul);
 

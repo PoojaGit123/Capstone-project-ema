@@ -103,6 +103,33 @@
   display: none;
 }
 
+/* --- Compact variant: article-detail "Share this story" rail ---
+   The source renders each related story as a plain title + date (no thumbnail,
+   no description) in a single stacked column. Values from source computed
+   styles: list items 18px apart, title 18px/27px uppercase, date 12px grey. */
+.article-list.article-list-compact ul {
+  display: block;
+  margin: 0;
+  gap: 0;
+}
+
+.article-list.article-list-compact li {
+  margin: 0 0 18px;
+  background: none;
+}
+
+.article-list.article-list-compact li:last-child {
+  margin-bottom: 0;
+}
+
+.article-list.article-list-compact .article-list-card-body {
+  padding: 0;
+}
+
+.article-list.article-list-compact .article-list-card-date {
+  margin-top: 2px;
+}
+
 @media (width >= 600px) {
   .article-list ul {
     grid-template-columns: repeat(2, minmax(0, 1fr));
