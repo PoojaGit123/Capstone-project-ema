@@ -225,16 +225,20 @@ header .nav-utility-inner {
   box-sizing: border-box;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 8px 24px;
+
+  /* Source utility band is a tight ~25px strip: the row height comes from the
+     ~18px text/flag, with only a hair of vertical padding. */
+  padding: 3px 24px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 24px;
+  line-height: 1.2;
 }
 
 @media (width >= 900px) {
   header .nav-utility-inner {
-    padding: 8px 32px;
+    padding: 3px 32px;
   }
 }
 
@@ -248,12 +252,23 @@ header nav .nav-tools {
 
 header .nav-signin { margin: 0; }
 
+/* Sign In is decorated as a .button.cta globally (a.button:any-link adds large
+   button padding); in the compact utility strip it must render as a plain
+   inline link (no box, no padding) so the band stays ~25px tall like the
+   source. Match a.button:any-link specificity + scope to win the cascade. */
 /* stylelint-disable-next-line no-descending-specificity */
-header .nav-signin a {
+header .nav-signin a.button:any-link {
+  display: inline;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
   color: #fff;
   text-decoration: none;
   text-transform: uppercase;
   font-size: var(--body-font-size-xs);
+  font-weight: 400;
+  line-height: 1.4;
   letter-spacing: 0.03em;
 }
 
@@ -272,11 +287,12 @@ header .nav-lang-toggle {
   margin: 0;
   border: 0;
   border-radius: 0;
-  padding: 4px 6px;
+  padding: 0; /* keep the utility strip compact (~25px, matches source) */
   background: none;
   color: #fff;
   font: inherit;
   font-size: var(--body-font-size-xs);
+  line-height: 1.4;
   text-transform: uppercase;
   letter-spacing: 0.03em;
   cursor: pointer;
@@ -296,7 +312,8 @@ header .nav-lang-toggle::after {
 /* stylelint-disable-next-line no-descending-specificity */
 header .nav-lang-toggle img {
   width: 20px;
-  height: auto;
+  height: 14px; /* cap flag height so it doesn't inflate the compact utility strip */
+  object-fit: cover;
   display: block;
 }
 

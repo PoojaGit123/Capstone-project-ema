@@ -263,6 +263,52 @@ function removeDuplicateTitle(main) {
 }
 
 /**
+ * Reflows the article-detail page into the source's two-column layout: the
+ * article prose (and author bio) on the left, and a right rail holding "SHARE
+ * THIS STORY" + the related-stories list. The import produces these as stacked
+ * sections; we group them into an .article-layout wrapper that CSS lays out as
+ * a grid (single column on mobile). Runs only on article-detail pages and only
+ * when the expected pieces are present, so other templates are untouched.
+ * @param {HTMLElement} main The main container element
+ */
+function decorateArticleLayout(main) {
+  if (!document.body.classList.contains('article-detail')) return;
+
+  // The hero section carries the prose (+ author bio); the related list is its
+  // own section. Identify each by the containers the pipeline adds.
+  const heroSection = main.querySelector('.section.columns-author-bio-container')
+    || main.querySelector('.section:has(h1)');
+  const relatedSection = main.querySelector('.section.article-list-container');
+  if (!heroSection || !relatedSection) return;
+
+  // The "SHARE THIS STORY" heading sits in its own default-content-wrapper at
+  // the end of the hero section — that plus the related list forms the rail.
+  const shareWrapper = [...heroSection.querySelectorAll(':scope > .default-content-wrapper')]
+    .find((w) => w.querySelector('h5'));
+
+  const layout = document.createElement('div');
+  layout.className = 'article-layout';
+  const left = document.createElement('div');
+  left.className = 'article-main';
+  const rail = document.createElement('aside');
+  rail.className = 'article-rail';
+  layout.append(left, rail);
+
+  // Left column: everything currently in the hero section except the share
+  // heading (prose wrapper + author-bio wrapper).
+  [...heroSection.children].forEach((child) => {
+    if (child !== shareWrapper) left.append(child);
+  });
+  // Right rail: share heading, then the related-stories list.
+  if (shareWrapper) rail.append(shareWrapper);
+  rail.append(...relatedSection.children);
+
+  // Mount the grid in the hero section and drop the now-empty related section.
+  heroSection.append(layout);
+  relatedSection.remove();
+}
+
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
@@ -275,6 +321,7 @@ export function decorateMain(main) {
   decorateButtons(main);
   decorateBreadcrumb(main);
   removeDuplicateTitle(main);
+  decorateArticleLayout(main);
 }
 
 /**

@@ -61,39 +61,10 @@
   color: rgb(105 105 105);
 }
 
-/* social buttons row (grouped by the block JS). Source renders 48x48 dark
-   icon tiles; we have text labels, so use dark boxes with padded labels. */
-.columns-author-bio-social {
-  display: flex;
-  flex-flow: row wrap;
-  gap: 8px;
+/* The social row is now a nested social-links block (its own CSS supplies the
+   48px dark tile styling); the author-bio only sets the spacing above it. */
+.columns-author-bio .social-links {
   margin-top: 8px;
-}
-
-.columns-author-bio-social a:any-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  padding: 0;
-  background-color: var(--text-color);
-  color: var(--background-color);
-  text-decoration: none;
-}
-
-.columns-author-bio-social a:hover {
-  background-color: var(--link-hover-color);
-  color: var(--background-color);
-  text-decoration: none;
-}
-
-/* icon-only social tiles: source renders a ~17.5px glyph centered in the 48px
-   square dark tile. */
-.columns-author-bio-social a svg {
-  width: 20px;
-  height: 20px;
-  display: block;
 }
 
 /* ==========================================================================
@@ -189,30 +160,12 @@
   color: var(--text-color);
 }
 
-/* Social links row (grouped by the block JS). Source: three 48px dark tiles
-   sitting flush together (no gap), 22px below the role. */
-.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio-social {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  gap: 0;
+/* Social links row: a nested social-links block (48px dark tiles, flush). Here
+   the card centers the row and sits it 22px below the role. */
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio .social-links {
   margin-top: 22px;
 }
 
-.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio-social a:any-link {
-  display: inline-flex;
-  align-items: center;
+.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio .social-links-list {
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  padding: 0;
-  background-color: var(--text-color);
-  color: rgb(235 235 235);
-  text-decoration: none;
-}
-
-.section:has(.columns-author-bio-wrapper + .columns-author-bio-wrapper) .columns-author-bio-social a:hover {
-  background-color: var(--link-hover-color);
-  color: var(--background-color);
-  text-decoration: none;
 }
