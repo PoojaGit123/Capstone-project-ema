@@ -577,17 +577,26 @@ main > .article-list-container + .section > .default-content-wrapper:has(img) p:
 
 main > .article-list-container + .section > .default-content-wrapper:has(img) img {
   width: 100%;
-  aspect-ratio: 18 / 10;
+
+  /* Source secure-teaser image is a fixed 200px-tall band (object-fit: cover),
+     not an aspect-ratio that grows with the column width — otherwise the image
+     balloons taller than the source on wide columns. */
+  height: 200px;
+  aspect-ratio: auto;
   object-fit: cover;
 }
 
 @media (width >= 900px) {
   /* two columns, filled column-first: each teaser (4 stacked elements) forms
-     one column. */
+     one column. Source cards are a fixed ~360px each, left-aligned (they do not
+     stretch to fill the container), with a 28px gutter — so use fixed 360px
+     tracks and let the row's extra width sit empty on the right, matching the
+     source. */
   main > .article-list-container + .section > .default-content-wrapper:has(img) {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 360px 360px;
     grid-template-rows: repeat(4, auto);
     grid-auto-flow: column;
+    justify-content: start;
     align-items: start;
   }
 }
