@@ -339,6 +339,34 @@ export function decorateMain(main) {
 }
 
 /**
+ * Preloads the LCP image at high priority. The image URL lives in the initial
+ * HTML but ships with loading="lazy", so the browser's preload scanner skips
+ * it and the deferred module script flips the attribute too late to matter on
+ * throttled mobile (which inflates Speed Index / LCP). Injecting a
+ * <link rel="preload" as="image"> lets the browser fetch the hero immediately,
+ * in parallel with the scripts rather than after them.
+ *
+ * We preload img.currentSrc — the exact variant the browser has already
+ * resolved from the <picture> for the current viewport — so the preload always
+ * matches what actually renders (webp width=750 on mobile, width=2000 on
+ * desktop). That guarantees a single download with no wasted bytes. Only the
+ * one LCP candidate is preloaded.
+ * @param {HTMLImageElement} img the LCP <img>
+ */
+function preloadLCPImage(img) {
+  const href = img.currentSrc || img.src;
+  if (!href || document.querySelector('link[rel="preload"][as="image"][data-lcp]')) return;
+  const link = document.createElement('link');
+  link.rel = 'preload';
+  link.as = 'image';
+  link.href = href;
+  link.setAttribute('fetchpriority', 'high');
+  link.setAttribute('data-lcp', '');
+  if (/format=webply|\.webp/.test(href)) link.type = 'image/webp';
+  document.head.append(link);
+}
+
+/**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
@@ -360,6 +388,7 @@ async function loadEager(doc) {
     if (lcpImg) {
       lcpImg.setAttribute('loading', 'eager');
       lcpImg.setAttribute('fetchpriority', 'high');
+      preloadLCPImage(lcpImg);
     }
 
     await loadSection(main.querySelector('.section'), waitForFirstImage);
