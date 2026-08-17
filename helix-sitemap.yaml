@@ -1,0 +1,18 @@
+version: 1
+
+# Sitemap config for the WKND site. Reproduces the sitemap that is currently
+# generated in the site-config layer so the configuration is version-controlled
+# and reproducible from source.
+#
+# The sitemap is index-driven: it lists every row of the query index (built by
+# helix-query.yaml -> /query-index.json) as a <url> with a <lastmod>, and writes
+# the result to /sitemap.xml. Single locale today (/us/en); add more <source>
+# entries or language mappings here if the site grows to additional locales.
+sitemaps:
+  default:
+    # Read the pages to include from the query index.
+    source: /query-index.json
+    # Emit the combined sitemap here (served at /sitemap.xml).
+    destination: /sitemap.xml
+    # Populate <lastmod> per URL from the index's last-modified data.
+    lastmod: true

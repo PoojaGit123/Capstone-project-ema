@@ -1,0 +1,12 @@
+# Production robots policy for the WKND site.
+#
+# NOTE: On the AEM preview/live hosts (*.aem.page / *.aem.live) AEM always
+# serves its own "Disallow: /" default to keep those hosts out of search
+# engines and avoid duplicate-content penalties — that override applies
+# regardless of this file. This version-controlled robots.txt is what a
+# correctly-configured production host serves: it allows crawling and points
+# crawlers at the sitemap.
+User-agent: *
+Allow: /
+
+Sitemap: https://main--capstone-project-ema--poojagit123.aem.live/sitemap.xml
