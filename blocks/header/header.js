@@ -171,11 +171,10 @@ function buildSearch() {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // load nav as fragment (localhost /content path first, then DA/EDS path)
+  // load nav as fragment
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  let fragment = await loadFragment('/content/nav');
-  if (!fragment) fragment = await loadFragment(navPath);
+  const fragment = await loadFragment(navPath);
 
   block.textContent = '';
   const nav = document.createElement('nav');
