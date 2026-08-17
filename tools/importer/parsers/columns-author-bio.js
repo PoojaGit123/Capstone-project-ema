@@ -1,8 +1,8 @@
 /* eslint-disable */
 /* global WebImporter */
 /**
- * Parser for variant: columns-author-bio
- * Base block: columns (blocks/columns-author-bio/)
+ * Parser for variant: Columns (author-bio)
+ * Base block: columns (blocks/columns/ — decorated by the .author-bio variant)
  * Source URL: https://wknd.site/us/en/magazine/arctic-surfing.html
  * Source selector: main.cmp-layout-container--fixed div[class*="cmp-experiencefragment--"]
  * Generated: 2026-08-05
@@ -10,7 +10,7 @@
  * Structure (from library-description.txt): Columns block — first row is the
  * block name, subsequent rows split content into side-by-side columns.
  * This variant renders an author-bio card as a single 2-column content row:
- *   Row 1: block name ("columns-author-bio").
+ *   Row 1: block name ("Columns (author-bio)").
  *   Row 2:
  *     cell 1 = portrait image (author photo),
  *     cell 2 = text (author name as heading + role/occupations + social links).
@@ -81,6 +81,6 @@ export default function parse(element, { document }) {
   // Single 2-column content row: image | text. Pad empties to keep width uniform.
   const cells = [[image || '', textCell.length ? textCell : '']];
 
-  const block = WebImporter.Blocks.createBlock(document, { name: 'columns-author-bio', cells });
+  const block = WebImporter.Blocks.createBlock(document, { name: 'Columns (author-bio)', cells });
   element.replaceWith(block);
 }

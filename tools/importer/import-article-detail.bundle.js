@@ -66,7 +66,7 @@ var CustomImportScript = (() => {
       return;
     }
     const cells = [[image || "", textCell.length ? textCell : ""]];
-    const block = WebImporter.Blocks.createBlock(document, { name: "columns-author-bio", cells });
+    const block = WebImporter.Blocks.createBlock(document, { name: "Columns (author-bio)", cells });
     element.replaceWith(block);
   }
 

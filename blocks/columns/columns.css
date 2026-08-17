@@ -31,3 +31,164 @@
     order: unset;
   }
 }
+
+/* ==========================================================================
+   Columns (author-bio) variant
+   Two usages:
+   1. Single author byline on article pages (small circular avatar + name/role/
+      social, side by side).
+   2. Contributor cards on about-us: several sibling author-bio blocks in one
+      section, shown as a centered card grid. Guarded with :has() so the grid
+      only applies when two or more adjacent author-bio blocks share a section.
+   Migrated from the former standalone columns-author-bio block.
+   ========================================================================== */
+
+/* --- Base: single author byline --- */
+.columns.author-bio > div {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* image cell: small circular avatar (60x60 in source) */
+.columns.author-bio > div > .columns-img-col {
+  flex: 0 0 auto;
+  order: 0;
+}
+
+.columns.author-bio > div > .columns-img-col img {
+  display: block;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* text cell */
+.columns.author-bio > div > div:not(.columns-img-col) {
+  flex: 1;
+  order: 1;
+}
+
+/* author name */
+.columns.author-bio h2 {
+  margin: 0 0 4px;
+  font-family: var(--heading-font-family);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 36px;
+  color: var(--text-color);
+}
+
+/* role / occupation ("Skater, Writer") */
+.columns.author-bio p {
+  margin: 0 0 12px;
+  font-family: var(--body-font-family);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 30px;
+  text-transform: uppercase;
+  color: rgb(105 105 105);
+}
+
+/* The social row is a nested social-links block (its own CSS supplies the 48px
+   dark tile styling); the author-bio only sets the spacing above it. */
+.columns.author-bio .social-links {
+  margin-top: 8px;
+}
+
+/* --- Contributor-card grid (about-us): multiple blocks in one section --- */
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+/* Neutralize the per-child max-width/centering the global section rule adds. */
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) > div {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Section headings ("Our Contributors", "WKND Guides") span the full row. */
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) > .default-content-wrapper {
+  grid-column: 1 / -1;
+}
+
+@media (width >= 600px) {
+  .section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  .section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0 32px;
+  }
+}
+
+/* Card content: stacked and centered */
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) .columns.author-bio {
+  padding: 9px 14px 18px;
+  text-align: center;
+}
+
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) .columns.author-bio > div,
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) .columns.author-bio > div > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  order: unset;
+  flex: unset;
+}
+
+/* Circular portrait */
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) .columns-img-col {
+  margin-bottom: 6px;
+}
+
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) .columns-img-col img {
+  width: 164px;
+  height: 164px;
+  max-width: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Name — source h3 (Asar 24px/36px), margin only below */
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) .columns.author-bio h2 {
+  margin: 0 0 6px;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 36px;
+  color: var(--text-color);
+}
+
+/* Role / occupation — source h5 (Source Sans Pro 14px/600/21px, uppercase) */
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) .columns.author-bio p {
+  margin: 0 0 4px;
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  text-transform: uppercase;
+  letter-spacing: normal;
+  color: var(--text-color);
+}
+
+/* Social links row: 48px dark tiles, centered, 22px below the role. */
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) .columns.author-bio .social-links {
+  margin-top: 22px;
+}
+
+.section:has(.columns-wrapper.author-bio + .columns-wrapper.author-bio) .columns.author-bio .social-links-list {
+  justify-content: center;
+}
