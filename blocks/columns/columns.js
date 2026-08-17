@@ -13,6 +13,14 @@ function decorateAuthorBio(block) {
   // stylesheet must be present too.
   loadCSS(`${window.hlx.codeBasePath}/blocks/social-links/social-links.css`);
 
+  // Mirror the variant class onto the block wrapper. aem.js only adds the base
+  // "columns-wrapper" (from block.classList[0]), so the contributor-card grid
+  // guard — which keys off adjacent author-bio wrappers — has nothing to match
+  // without this. Nested :has() is invalid CSS, so the wrapper needs a real
+  // class rather than a :has(> .columns.author-bio) selector.
+  const wrapper = block.closest('.columns-wrapper');
+  if (wrapper) wrapper.classList.add('author-bio');
+
   const isSocialPara = (el) => el
     && el.tagName === 'P'
     && el.children.length === 1
