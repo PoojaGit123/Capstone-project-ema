@@ -276,7 +276,12 @@ function decorateArticleLayout(main) {
 
   // The hero section carries the prose (+ author bio); the related list is its
   // own section. Identify each by the containers the pipeline adds.
-  const heroSection = main.querySelector('.section.columns-author-bio-container')
+  // The author bio is a Columns (author-bio) variant, so its section carries
+  // the columns-container class and its block wrapper is .columns-wrapper. Fall
+  // back to the legacy columns-author-bio container/wrapper so this works before
+  // and after the DA content is migrated to the variant.
+  const heroSection = main.querySelector('.section.columns-container')
+    || main.querySelector('.section.columns-author-bio-container')
     || main.querySelector('.section:has(h1)');
   const relatedSection = main.querySelector('.section.article-list-container');
   if (!heroSection || !relatedSection) return;
@@ -287,7 +292,9 @@ function decorateArticleLayout(main) {
   const wrappers = [...heroSection.querySelectorAll(':scope > .default-content-wrapper')];
   const proseWrapper = wrappers.find((w) => w.querySelector('h1'));
   const shareWrapper = wrappers.find((w) => w !== proseWrapper && w.querySelector('h5'));
-  const authorWrapper = heroSection.querySelector(':scope > .columns-author-bio-wrapper');
+  const authorWrapper = heroSection.querySelector(':scope > .columns-wrapper.author-bio')
+    || heroSection.querySelector(':scope > .columns-author-bio-wrapper')
+    || heroSection.querySelector(':scope > .columns-wrapper');
   if (!proseWrapper) return;
 
   // Full-width header (spans both columns, matches source): the leading hero
