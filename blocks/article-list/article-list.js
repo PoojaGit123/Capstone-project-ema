@@ -232,12 +232,9 @@ export default async function decorate(block) {
   // 5. Render. On article-detail pages this block is the "related stories"
   //    sidebar, where the source shows a publish date under each title; on the
   //    homepage / section-landing "Recent Articles" listing it does not. The
-  //    author-bio block only exists on article-detail pages, so use it as the
+  //    author-bio variant only exists on article-detail pages, so use it as the
   //    signal (also settable explicitly via a "dates" config row).
-  // Match both the new Columns (author-bio) variant and the legacy standalone
-  // columns-author-bio block, so this works before and after the DA content is
-  // migrated to the variant.
-  const isArticleDetail = !!document.querySelector('main .columns.author-bio, main .columns-author-bio, main .article-detail');
+  const isArticleDetail = !!document.querySelector('main .columns.author-bio, main .article-detail');
   const showDate = (config.dates || '').toLowerCase() === 'true' || isArticleDetail;
   if (showDate) block.classList.add('article-list-with-dates');
 
