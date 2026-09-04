@@ -18,9 +18,14 @@
  * Emitted table:
  *   Row 1: block name (article-list)
  *   Row 2: source  | /<loc>/<lang>/adventures/   (folder the block filters to)
- *   Row 3: index   | /adventure-index.json       (dedicated adventures index)
+ *   Row 3: index   | /query-index.json           (shared site query index)
  *   Row 4: filters | Label=slugA,slugB;Label2=…  (category tab membership)
  *   (no limit row -> the block shows every matching adventure)
+ *
+ * The adventures listing reads the SAME /query-index.json as the magazine
+ * listing (helix-query.yaml indexes both /magazine/** and /adventures/** into
+ * it) and filters to the adventures folder via the `source` row. Cards are
+ * fully index-driven.
  *
  * The `filters` row carries the editorial category membership read from the
  * source tab panels (Climbing/Cycling/Skiing/Surfing/Travel). This grouping is
@@ -84,7 +89,7 @@ function extractFilters(element) {
 }
 
 export default function parse(element, { document, params }) {
-  const INDEX = '/adventure-index.json';
+  const INDEX = '/query-index.json';
 
   // Derive the adventures folder from the page locale being imported
   // (e.g. /us/en/adventures/). Fall back to /us/en if the path is unusual.
@@ -97,7 +102,7 @@ export default function parse(element, { document, params }) {
     : '/us/en/adventures/';
 
   // Config rows only — no pinned links. readBlockConfig in the block consumes
-  // these; the live adventure-index.json fills the entire list.
+  // these; the live /query-index.json (adventures folder) fills the list.
   const cells = [
     ['source', sourceFolder],
     ['index', INDEX],

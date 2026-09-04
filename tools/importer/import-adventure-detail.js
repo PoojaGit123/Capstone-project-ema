@@ -17,7 +17,7 @@ import sectionsTransformer from './transformers/wknd-sections.js';
 // the tab structure on the listing page. To make category assignment
 // self-updating (a newly published adventure lands in the right tab without
 // re-importing the listing), each adventure-detail page publishes its own
-// `category` so helix-query.yaml can harvest it into /adventure-index.json.
+// `category` so helix-query.yaml can harvest it into /query-index.json.
 //
 // CATEGORY_BY_SLUG is transcribed verbatim from the wknd.site adventures
 // listing tab panels (https://wknd.site/us/en/adventures.html). Keep it in sync
@@ -62,7 +62,7 @@ function slugFromUrl(rawUrl) {
  * Append a `Category` row to the page's Metadata block (built by
  * WebImporter.rules.createMetadata). EDS turns this into
  * <meta name="category" content="...">, which helix-query.yaml harvests into
- * /adventure-index.json. No-op when the adventure has no category or no
+ * /query-index.json. No-op when the adventure has no category or no
  * Metadata block; idempotent (won't add a second Category row).
  */
 function addAdventureCategory(main, document, rawUrl) {

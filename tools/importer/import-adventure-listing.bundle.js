@@ -97,7 +97,7 @@ var CustomImportScript = (() => {
     return parts.join(";");
   }
   function parse2(element, { document, params }) {
-    const INDEX = "/adventure-index.json";
+    const INDEX = "/query-index.json";
     const pagePath = params && params.originalURL ? new URL(params.originalURL).pathname : "/us/en/adventures.html";
     const loc = pagePath.match(/^\/([^/]+)\/([^/]+)/);
     const sourceFolder = loc ? `/${loc[1]}/${loc[2]}/adventures/` : "/us/en/adventures/";
@@ -219,7 +219,7 @@ var CustomImportScript = (() => {
       { name: "hero", instances: ["div.teaser.cmp-teaser--hero"] },
       // The whole source tabbed card grid (category tab nav + every per-category
       // panel) is replaced by a single dynamic article-list block driven by
-      // /adventure-index.json (see parsers/adventure-list.js). Target the tabs
+      // /query-index.json (see parsers/adventure-list.js). Target the tabs
       // container itself so no leftover category lists remain.
       { name: "article-list", instances: ["div.tabs.panelcontainer"] }
     ],
