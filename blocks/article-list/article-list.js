@@ -68,6 +68,137 @@ function sortNewestFirst(rows) {
   return [...rows].sort((a, b) => ts(b) - ts(a));
 }
 
+/**
+ * Parse the optional `filters` config value into an ordered list of category
+ * definitions. The adventures listing authors this so the tab grid can be
+ * filtered by category; other article-list uses omit it. Card data always comes
+ * live from the index — this only supplies the editorial category membership
+ * (which is not present in the index), keyed by article slug (last path
+ * segment). Format: "Label=slugA,slugB;Label2=slugC" (semicolon-separated
+ * categories, each "Label=comma,separated,slugs").
+ * @param {string} value
+ * @returns {Array<{label: string, slugs: Set<string>}>}
+ */
+function parseFilters(value) {
+  if (!value || typeof value !== 'string') return [];
+  return value
+    .split(';')
+    .map((part) => {
+      const eq = part.indexOf('=');
+      if (eq < 0) return null;
+      const label = part.slice(0, eq).trim();
+      const slugs = part
+        .slice(eq + 1)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      return label && slugs.length ? { label, slugs: new Set(slugs) } : null;
+    })
+    .filter(Boolean);
+}
+
+/** Last path segment (slug) for an index row's path. */
+function slugOf(row) {
+  return normalizePath(row.path).split('/').filter(Boolean).pop() || '';
+}
+
+/**
+ * Derive category filters from the live index rows' `category` field. This is
+ * the self-updating source of truth: as adventures are published with a
+ * `category` meta, they appear under the right tab with no re-import of the
+ * listing. `category` may be a comma-separated list (an item can be in several
+ * categories). Categories are ordered by first appearance in the (already
+ * newest-first) rows. Returns [] when no row carries a category, so the caller
+ * can fall back to the authored `filters` config during rollout.
+ * @param {Array} rows index rows
+ * @returns {Array<{label: string, slugs: Set<string>}>}
+ */
+function categoriesFromRows(rows) {
+  const order = [];
+  const byLabel = new Map();
+  rows.forEach((row) => {
+    const raw = row.category;
+    if (!raw || typeof raw !== 'string') return;
+    raw.split(',').map((c) => c.trim()).filter(Boolean).forEach((label) => {
+      if (!byLabel.has(label)) {
+        byLabel.set(label, new Set());
+        order.push(label);
+      }
+      byLabel.get(label).add(slugOf(row));
+    });
+  });
+  return order.map((label) => ({ label, slugs: byLabel.get(label) }));
+}
+
+/**
+ * Show only the cards whose slug is in `slugs`; pass null to show all.
+ * @param {HTMLElement} ul the card list
+ * @param {Set<string>|null} slugs
+ */
+function applyFilter(ul, slugs) {
+  [...ul.children].forEach((li) => {
+    li.hidden = !!slugs && !slugs.has(li.dataset.slug);
+  });
+}
+
+/**
+ * Build an accessible tablist that filters the card list by category.
+ * @param {Array<{label: string, slugs: Set<string>}>} filters
+ * @param {HTMLElement} ul the card list to filter
+ * @returns {HTMLElement} the tablist nav
+ */
+function buildFilterTabs(filters, ul) {
+  const nav = document.createElement('div');
+  nav.className = 'article-list-filters';
+  nav.setAttribute('role', 'tablist');
+  nav.setAttribute('aria-label', 'Filter by category');
+
+  // "All" first, then each authored category, in source order.
+  const tabs = [{ label: 'All', slugs: null }, ...filters];
+  const buttons = tabs.map((tab, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'article-list-filter';
+    btn.setAttribute('role', 'tab');
+    btn.textContent = tab.label;
+    const selected = i === 0;
+    btn.setAttribute('aria-selected', String(selected));
+    btn.setAttribute('tabindex', selected ? '0' : '-1');
+    if (selected) btn.classList.add('is-selected');
+
+    const select = () => {
+      buttons.forEach((b) => {
+        b.setAttribute('aria-selected', 'false');
+        b.setAttribute('tabindex', '-1');
+        b.classList.remove('is-selected');
+      });
+      btn.setAttribute('aria-selected', 'true');
+      btn.setAttribute('tabindex', '0');
+      btn.classList.add('is-selected');
+      applyFilter(ul, tab.slugs);
+    };
+    btn.addEventListener('click', select);
+    return btn;
+  });
+
+  // Roving-tabindex arrow-key navigation between tabs.
+  nav.addEventListener('keydown', (e) => {
+    const current = buttons.findIndex((b) => b.getAttribute('tabindex') === '0');
+    let next = -1;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (current + 1) % buttons.length;
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (current - 1 + buttons.length) % buttons.length;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = buttons.length - 1;
+    if (next < 0) return;
+    e.preventDefault();
+    buttons[next].focus();
+    buttons[next].click();
+  });
+
+  buttons.forEach((btn) => nav.append(btn));
+  return nav;
+}
+
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -108,6 +239,8 @@ function formatArticleDate(value) {
 function renderCard(row, opts = {}) {
   const li = document.createElement('li');
   const href = normalizePath(row.path);
+  // Last path segment — used as the key for category filtering.
+  li.dataset.slug = href.split('/').filter(Boolean).pop() || '';
 
   if (row.image && !opts.compact) {
     const imageLink = document.createElement('a');
@@ -251,7 +384,23 @@ export default async function decorate(block) {
   const ul = document.createElement('ul');
   selected.slice(0, limit).forEach((row) => ul.append(renderCard(row, { showDate, compact })));
 
-  block.replaceChildren(ul);
+  // 6. Optional category filter tabs (adventures listing). Categories come
+  //    primarily from the live index `category` field (self-updating as
+  //    adventures are published); the authored `filters` config is a fallback
+  //    used only before the index carries category data (rollout). The cards
+  //    themselves are always index-driven. Only rendered when categories exist
+  //    and there are cards, so other article-list uses are unaffected.
+  let filters = [];
+  if (!compact) {
+    const indexCategories = categoriesFromRows(selected);
+    filters = indexCategories.length ? indexCategories : parseFilters(config.filters);
+  }
+  if (filters.length && selected.length) {
+    block.classList.add('article-list-filtered');
+    block.replaceChildren(buildFilterTabs(filters, ul), ul);
+  } else {
+    block.replaceChildren(ul);
+  }
 
   // Nothing to show (e.g. index not yet published and no pinned links).
   if (!selected.length) {

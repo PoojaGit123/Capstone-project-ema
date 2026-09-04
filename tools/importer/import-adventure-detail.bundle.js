@@ -180,9 +180,17 @@ var CustomImportScript = (() => {
   }
   function transform2(hookName, element, payload) {
     if (hookName === TransformHook2.afterTransform) {
+      const { document } = payload;
+      const templateName = payload && payload.template && payload.template.name;
+      if (templateName === "section-landing") {
+        element.querySelectorAll(".separator, .cmp-separator").forEach((sepEl) => {
+          if (!sepEl.parentNode) return;
+          const hr = document.createElement("hr");
+          sepEl.replaceWith(hr);
+        });
+      }
       const sections = payload && payload.template && Array.isArray(payload.template.sections) ? payload.template.sections : [];
       if (sections.length < 2) return;
-      const { document } = payload;
       for (let i = sections.length - 1; i >= 0; i -= 1) {
         const section = sections[i];
         const els = resolveSectionElements(element, section);
@@ -205,6 +213,56 @@ var CustomImportScript = (() => {
   }
 
   // tools/importer/import-adventure-detail.js
+  var CATEGORY_BY_SLUG = {
+    "bali-surf-camp": ["Surfing"],
+    "beervana-portland": ["Travel"],
+    "climbing-new-zealand": ["Climbing"],
+    "colorado-rock-climbing": ["Climbing"],
+    // cycling-southern-utah intentionally omitted (source lists it only under All).
+    "cycling-tuscany": ["Cycling", "Travel"],
+    "downhill-skiing-wyoming": ["Skiing"],
+    "gastronomic-marais-tour": ["Travel"],
+    "napa-wine-tasting": ["Travel"],
+    "riverside-camping-australia": ["Travel"],
+    "ski-touring-mont-blanc": ["Skiing"],
+    "surf-camp-costa-rica": ["Surfing"],
+    "tahoe-skiing": ["Skiing"],
+    "west-coast-cycling": ["Cycling"],
+    "whistler-mountain-biking": ["Cycling"],
+    "yosemite-backpacking": ["Travel"]
+  };
+  function slugFromUrl(rawUrl) {
+    if (!rawUrl) return "";
+    let pathname = rawUrl;
+    try {
+      pathname = new URL(rawUrl).pathname;
+    } catch (e) {
+    }
+    const segments = pathname.replace(/\.html$/, "").replace(/\/$/, "").split("/");
+    return segments[segments.length - 1] || "";
+  }
+  function addAdventureCategory(main, document, rawUrl) {
+    const categories = CATEGORY_BY_SLUG[slugFromUrl(rawUrl)];
+    if (!categories || !categories.length) return;
+    const metaTable = [...main.querySelectorAll("table")].find((table) => {
+      const firstCell = table.querySelector("tr td, tr th");
+      return firstCell && firstCell.textContent.trim().toLowerCase() === "metadata";
+    });
+    if (!metaTable) return;
+    const hasCategory = [...metaTable.querySelectorAll("tr")].some((tr) => {
+      const key = tr.querySelector("td, th");
+      return key && key.textContent.trim().toLowerCase() === "category";
+    });
+    if (hasCategory) return;
+    const tbody = metaTable.querySelector("tbody") || metaTable;
+    const row = document.createElement("tr");
+    const keyCell = document.createElement("td");
+    keyCell.textContent = "Category";
+    const valCell = document.createElement("td");
+    valCell.textContent = categories.join(", ");
+    row.append(keyCell, valCell);
+    tbody.append(row);
+  }
   var PAGE_TEMPLATE = {
     name: "adventure-detail",
     description: "Adventure trip detail page: breadcrumb, hero image carousel, title, adventure details list, and tabbed content.",
@@ -290,6 +348,7 @@ var CustomImportScript = (() => {
       const hr = document.createElement("hr");
       main.appendChild(hr);
       WebImporter.rules.createMetadata(main, document);
+      addAdventureCategory(main, document, params.originalURL);
       WebImporter.rules.transformBackgroundImages(main, document);
       WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
       const path = WebImporter.FileUtils.sanitizePath(
