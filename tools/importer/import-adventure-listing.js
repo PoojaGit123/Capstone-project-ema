@@ -15,7 +15,7 @@ const PAGE_TEMPLATE = {
     { name: 'hero', instances: ['div.teaser.cmp-teaser--hero'] },
     // The whole source tabbed card grid (category tab nav + every per-category
     // panel) is replaced by a single dynamic article-list block driven by
-    // /adventure-index.json (see parsers/adventure-list.js). Target the tabs
+    // /query-index.json (see parsers/adventure-list.js). Target the tabs
     // container itself so no leftover category lists remain.
     { name: 'article-list', instances: ['div.tabs.panelcontainer'] },
   ],
