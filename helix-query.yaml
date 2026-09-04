@@ -46,3 +46,53 @@ indices:
         select: none
         value: |
           parseTimestamp(headers['last-modified'], 'ddd, DD MMM YYYY hh:mm:ss GMT')
+
+  # Adventure query index. Any published adventure detail page (across locales,
+  # e.g. /us/en/adventures/bali-surf-camp) is automatically added here. The
+  # adventures landing page drives its card grid from this index via the
+  # article-list block (source=/us/en/adventures/, index=/adventure-index.json),
+  # so new adventures appear on the listing on their own once published. Kept
+  # separate from /query-index.json so the magazine listing and the sitemap are
+  # unaffected.
+  adventures:
+    include:
+      - '/*/*/adventures/**'
+    exclude:
+      # The adventures landing page itself is not an adventure detail page.
+      - '/*/*/adventures'
+      - '/*/*/adventures/'
+    target: /adventure-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: |
+          attribute(el, 'content')
+      image:
+        select: head > meta[property="og:image"]
+        value: |
+          attribute(el, 'content')
+      description:
+        select: head > meta[name="description"]
+        value: |
+          attribute(el, 'content')
+      template:
+        select: head > meta[name="template"]
+        value: |
+          attribute(el, 'content')
+      publisheddate:
+        select: head > meta[name="publisheddate"]
+        value: |
+          attribute(el, 'content')
+      # Editorial category (Climbing/Cycling/Skiing/Surfing/Travel), published as
+      # <meta name="category"> by the adventure-detail import. May be a
+      # comma-separated list when an adventure belongs to more than one category.
+      # The adventures listing block builds its filter tabs from this column, so
+      # category assignment stays self-updating as adventures are published.
+      category:
+        select: head > meta[name="category"]
+        value: |
+          attribute(el, 'content')
+      lastModified:
+        select: none
+        value: |
+          parseTimestamp(headers['last-modified'], 'ddd, DD MMM YYYY hh:mm:ss GMT')

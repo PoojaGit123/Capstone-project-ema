@@ -103,6 +103,57 @@
   display: none;
 }
 
+/* --- Category filter tabs (adventures listing) ---
+   Matches the WKND tabs block: horizontal uppercase labels, active tab = dark
+   fill + light text. Cards are index-driven; these only filter which show. */
+.article-list .article-list-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0 0 24px;
+  padding: 0;
+  border-bottom: 1px solid var(--light-color, rgb(235 235 235));
+}
+
+.article-list .article-list-filter {
+  flex: 0 0 auto;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 8px 16px;
+  background-color: transparent;
+  color: var(--text-color, rgb(32 32 32));
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.article-list .article-list-filter:focus-visible {
+  outline: 2px solid var(--text-color, rgb(32 32 32));
+  outline-offset: -2px;
+}
+
+.article-list .article-list-filter:hover:not(.is-selected) {
+  background-color: var(--light-color, rgb(235 235 235));
+}
+
+.article-list .article-list-filter.is-selected {
+  background-color: var(--text-color, rgb(32 32 32));
+  color: var(--background-color, #fff);
+  cursor: default;
+}
+
+/* Filtered-out cards are hidden via the [hidden] attribute set in JS. */
+.article-list li[hidden] {
+  display: none;
+}
+
 /* --- Compact variant: article-detail "Share this story" rail ---
    The source renders each related story as a plain title + date (no thumbnail,
    no description) in a single stacked column. Values from source computed

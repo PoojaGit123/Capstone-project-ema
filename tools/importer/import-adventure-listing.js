@@ -2,28 +2,32 @@
 /* global WebImporter */
 
 import heroParser from './parsers/hero.js';
-import cardsParser from './parsers/cards.js';
+import adventureListParser from './parsers/adventure-list.js';
 
 import cleanupTransformer from './transformers/wknd-cleanup.js';
 import sectionsTransformer from './transformers/wknd-sections.js';
 
 const PAGE_TEMPLATE = {
   name: 'adventure-listing',
-  description: 'Adventures listing page: intro hero teaser and a grid of adventure cards.',
+  description: 'Adventures listing page: intro hero teaser and a live, query-index-driven adventure list.',
   urls: ['https://wknd.site/us/en/adventures.html'],
   blocks: [
     { name: 'hero', instances: ['div.teaser.cmp-teaser--hero'] },
-    { name: 'cards', instances: ['div.tabs.panelcontainer .cmp-tabs__tabpanel--active div.image-list.list', 'div.tabs.panelcontainer div.image-list.list'] },
+    // The whole source tabbed card grid (category tab nav + every per-category
+    // panel) is replaced by a single dynamic article-list block driven by
+    // /adventure-index.json (see parsers/adventure-list.js). Target the tabs
+    // container itself so no leftover category lists remain.
+    { name: 'article-list', instances: ['div.tabs.panelcontainer'] },
   ],
   sections: [
     { id: 'av2', name: 'intro-teaser', selector: 'div.teaser.cmp-teaser--hero', style: null, blocks: ['hero'], defaultContent: ['main div.title:has(#title-e8e3276d1e)'] },
-    { id: 'av4', name: 'adventures-listing', selector: 'div.tabs.panelcontainer', style: null, blocks: ['cards'], defaultContent: ['div.title.cmp-title--underline:has(#title-dffa0ffaf3)'] },
+    { id: 'av4', name: 'adventures-listing', selector: 'div.tabs.panelcontainer', style: null, blocks: ['article-list'], defaultContent: ['div.title.cmp-title--underline:has(#title-dffa0ffaf3)'] },
   ],
 };
 
 const parsers = {
   hero: heroParser,
-  cards: cardsParser,
+  'article-list': adventureListParser,
 };
 
 const transformers = [

@@ -278,7 +278,7 @@
       ],
       "representativeUrl": "https://wknd.site/us/en/adventures.html",
       "coverageGaps": [],
-      "description": "Adventures listing page: hero and tabbed/grid listing of adventure cards.",
+      "description": "Adventures listing page: hero and a live, query-index-driven adventure list (article-list block reading /adventure-index.json).",
       "blocks": [
         {
           "name": "hero",
@@ -287,10 +287,9 @@
           ]
         },
         {
-          "name": "cards",
+          "name": "article-list",
           "instances": [
-            "div.tabs.panelcontainer .cmp-tabs__tabpanel--active div.image-list.list",
-            "div.tabs.panelcontainer div.image-list.list"
+            "div.tabs.panelcontainer"
           ]
         }
       ],
@@ -313,7 +312,7 @@
           "selector": "div.tabs.panelcontainer",
           "style": null,
           "blocks": [
-            "cards"
+            "article-list"
           ],
           "defaultContent": [
             "div.title.cmp-title--underline:has(#title-dffa0ffaf3)"

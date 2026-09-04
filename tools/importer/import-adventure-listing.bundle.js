@@ -64,38 +64,50 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/parsers/cards.js
-  function parse2(element, { document }) {
-    const items = Array.from(element.querySelectorAll(".cmp-image-list__item"));
-    const cells = [];
-    items.forEach((item) => {
-      const image = item.querySelector(".cmp-image-list__item-image img, .cmp-image img, img");
-      const titleLink = item.querySelector(".cmp-image-list__item-title-link, a[href]");
-      const description = item.querySelector('.cmp-image-list__item-description, [class*="description"]');
-      const bodyCell = [];
-      if (titleLink) {
-        const href = titleLink.getAttribute("href");
-        const titleText = (item.querySelector(".cmp-image-list__item-title") || titleLink).textContent.trim();
-        const h3 = document.createElement("h3");
-        if (href) {
-          const link = document.createElement("a");
-          link.setAttribute("href", href);
-          link.textContent = titleText;
-          h3.append(link);
-        } else {
-          h3.textContent = titleText;
-        }
-        bodyCell.push(h3);
-      }
-      if (description) bodyCell.push(description);
-      if (!image && bodyCell.length === 0) return;
-      cells.push([image || "", bodyCell.length ? bodyCell : ""]);
+  // tools/importer/parsers/adventure-list.js
+  function slugFromHref(href) {
+    if (!href) return "";
+    return href.replace(/[?#].*$/, "").replace(/\.html$/, "").replace(/\/$/, "").split("/").filter(Boolean).pop() || "";
+  }
+  function extractFilters(element) {
+    const tablist = element.querySelector('[role="tablist"], ol.cmp-tabs__tablist, ol');
+    if (!tablist) return "";
+    const tabDefs = [...tablist.querySelectorAll('[role="tab"], li, a')].map((tab) => {
+      const id = tab.id || tab.getAttribute("aria-controls") || "";
+      const label = (tab.textContent || "").trim();
+      return label ? { id, label } : null;
+    }).filter(Boolean);
+    const panels = [...element.querySelectorAll('[role="tabpanel"], .cmp-tabs__tabpanel')];
+    const parts = [];
+    tabDefs.forEach(({ id, label }) => {
+      if (/^all$/i.test(label)) return;
+      let panel = panels.find((p) => {
+        const lbl = p.getAttribute("aria-labelledby") || "";
+        return id && (lbl === id || lbl === `${id}-tab` || `${lbl}-tab` === id);
+      });
+      if (!panel) panel = panels[tabDefs.indexOf(tabDefs.find((t) => t.label === label))];
+      if (!panel) return;
+      const slugs = [];
+      panel.querySelectorAll('a[href*="/adventures/"]').forEach((a) => {
+        const slug = slugFromHref(a.getAttribute("href"));
+        if (slug && slug !== "adventures" && !slugs.includes(slug)) slugs.push(slug);
+      });
+      if (slugs.length) parts.push(`${label}=${slugs.join(",")}`);
     });
-    if (cells.length === 0) {
-      element.replaceWith(...element.childNodes);
-      return;
-    }
-    const block = WebImporter.Blocks.createBlock(document, { name: "cards", cells });
+    return parts.join(";");
+  }
+  function parse2(element, { document, params }) {
+    const INDEX = "/adventure-index.json";
+    const pagePath = params && params.originalURL ? new URL(params.originalURL).pathname : "/us/en/adventures.html";
+    const loc = pagePath.match(/^\/([^/]+)\/([^/]+)/);
+    const sourceFolder = loc ? `/${loc[1]}/${loc[2]}/adventures/` : "/us/en/adventures/";
+    const cells = [
+      ["source", sourceFolder],
+      ["index", INDEX]
+    ];
+    const filters = extractFilters(element);
+    if (filters) cells.push(["filters", filters]);
+    const block = WebImporter.Blocks.createBlock(document, { name: "article-list", cells });
     element.replaceWith(block);
   }
 
@@ -166,9 +178,17 @@ var CustomImportScript = (() => {
   }
   function transform2(hookName, element, payload) {
     if (hookName === TransformHook2.afterTransform) {
+      const { document } = payload;
+      const templateName = payload && payload.template && payload.template.name;
+      if (templateName === "section-landing") {
+        element.querySelectorAll(".separator, .cmp-separator").forEach((sepEl) => {
+          if (!sepEl.parentNode) return;
+          const hr = document.createElement("hr");
+          sepEl.replaceWith(hr);
+        });
+      }
       const sections = payload && payload.template && Array.isArray(payload.template.sections) ? payload.template.sections : [];
       if (sections.length < 2) return;
-      const { document } = payload;
       for (let i = sections.length - 1; i >= 0; i -= 1) {
         const section = sections[i];
         const els = resolveSectionElements(element, section);
@@ -193,20 +213,24 @@ var CustomImportScript = (() => {
   // tools/importer/import-adventure-listing.js
   var PAGE_TEMPLATE = {
     name: "adventure-listing",
-    description: "Adventures listing page: intro hero teaser and a grid of adventure cards.",
+    description: "Adventures listing page: intro hero teaser and a live, query-index-driven adventure list.",
     urls: ["https://wknd.site/us/en/adventures.html"],
     blocks: [
       { name: "hero", instances: ["div.teaser.cmp-teaser--hero"] },
-      { name: "cards", instances: ["div.tabs.panelcontainer .cmp-tabs__tabpanel--active div.image-list.list", "div.tabs.panelcontainer div.image-list.list"] }
+      // The whole source tabbed card grid (category tab nav + every per-category
+      // panel) is replaced by a single dynamic article-list block driven by
+      // /adventure-index.json (see parsers/adventure-list.js). Target the tabs
+      // container itself so no leftover category lists remain.
+      { name: "article-list", instances: ["div.tabs.panelcontainer"] }
     ],
     sections: [
       { id: "av2", name: "intro-teaser", selector: "div.teaser.cmp-teaser--hero", style: null, blocks: ["hero"], defaultContent: ["main div.title:has(#title-e8e3276d1e)"] },
-      { id: "av4", name: "adventures-listing", selector: "div.tabs.panelcontainer", style: null, blocks: ["cards"], defaultContent: ["div.title.cmp-title--underline:has(#title-dffa0ffaf3)"] }
+      { id: "av4", name: "adventures-listing", selector: "div.tabs.panelcontainer", style: null, blocks: ["article-list"], defaultContent: ["div.title.cmp-title--underline:has(#title-dffa0ffaf3)"] }
     ]
   };
   var parsers = {
     hero: parse,
-    cards: parse2
+    "article-list": parse2
   };
   var transformers = [
     transform,
